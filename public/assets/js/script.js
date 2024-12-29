@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const termsModal = document.getElementById("termsModal");
     const closeTermsModalBtn = document.getElementById("closeTermsModal");
 
-    // Sonidos
+    // Sonidos Correctamente Referenciados
     const spinSound = new Audio("assets/sounds/spin.wav");
     const winSound = new Audio("assets/sounds/win.mp3");
 
@@ -562,11 +562,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             element.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 
-            // Añadir clase 'expiring' si quedan menos de 1 día
-            if (distance <= 24 * 60 * 60 * 1000) { // 1 día en milisegundos
+            // Opcional: Añadir clase 'expiring' si queda menos de un día
+            if (distance < (1000 * 60 * 60 * 24)) {
                 element.classList.add("expiring");
-            } else {
-                element.classList.remove("expiring");
             }
         }
 
