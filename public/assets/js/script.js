@@ -1,4 +1,4 @@
-// frontend/public/assets/js/script.js
+// /frontend/assets/js/script.js
 
 document.addEventListener("DOMContentLoaded", async () => {
     const spinButton = document.getElementById("spinButton");
@@ -37,21 +37,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("[handleSpinResult] Animación finalizada.");
         console.log("[handleSpinResult] Premio seleccionado:", indicatedSegment.text);
 
-        // Verificar si wheelInstance está definido y tiene la propiedad animation.stopAngle
-        if (wheelInstance && wheelInstance.animation && typeof wheelInstance.animation.stopAngle === 'number') {
-            console.log("[handleSpinResult] stopAngle de la animación:", wheelInstance.animation.stopAngle);
-        } else {
-            console.warn("[handleSpinResult] wheelInstance o wheelInstance.animation no está definido.");
-            // Intentar usar la variable global 'wheel' si wheelInstance no está disponible
-            if (wheel && wheel.animation && typeof wheel.animation.stopAngle === 'number') {
-                console.log("[handleSpinResult] Usando 'wheel' global para stopAngle:", wheel.animation.stopAngle);
-            } else {
-                console.warn("[handleSpinResult] La variable global 'wheel' tampoco está definida correctamente.");
-            }
-        }
-
         try {
-            // En lugar de usar indicatedSegment.text, usar el premio seleccionado por el servidor
+            // Usar el premio seleccionado por el servidor
             const prizeText = userState.selectedPrize.trim();
             winSound.play();
             console.log("[handleSpinResult] Sonido de victoria reproducido.");
@@ -106,11 +93,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             console.log("[initializeWheel] Segmentos recibidos:", data.segments);
-
-            // Verificar el orden de los segmentos
-            data.segments.forEach((segment, index) => {
-                console.log(`Segmento ${index}: ${segment.text}`);
-            });
 
             // Configurar la ruleta con pointerAngle: 0°
             wheel = new Winwheel({
@@ -174,9 +156,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             if (response.ok) {
                 userState.spinsAvailable = data.spinsAvailable;
-                userState.prizes = data.prizes || [];
                 updateSpinButton();
-                updatePrizesList();
                 alert(data.message);
                 console.log("[shareOnFacebook] Giros actualizados:", userState.spinsAvailable);
             } else {
