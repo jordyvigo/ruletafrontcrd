@@ -1,0 +1,8 @@
+# Fuerza el uso de LF para archivos JavaScript
+*.js text eol=lf
+
+# Opcional: Si tienes otros tipos de archivos que deseas manejar de manera específica
+# Por ejemplo, CSS, HTML, JSON, etc.
+*.css text eol=lf
+*.html text eol=lf
+*.json text eol=lf
