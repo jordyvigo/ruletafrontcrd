@@ -104,6 +104,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 textFontSize: 18,
                 textFillStyle: "#FFFFFF",
                 textStrokeStyle: "#000000",
+				textLineWidth: 1, // Añadir esta línea para reducir el grosor del stroke
                 segments: data.segments,
                 responsive: true,
                 segmentsWidth: 1,
