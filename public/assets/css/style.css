@@ -287,13 +287,13 @@ body {
 /* ========== POINTER ANDROID ========= */
 .android-pointer {
     position: absolute;
-    right: -60px; /* Posicionar fuera del contenedor hacia la derecha */
+    left: -80px; /* Posicionar fuera del contenedor hacia la izquierda. Ajusta según sea necesario */
     top: 50%;
     transform: translateY(-50%); /* Centrado vertical */
-    width: 70px; /* Aumentar el tamaño del pointer */
+    width: 90px; /* Aumentar el tamaño del pointer */
     height: auto;
     z-index: 100;
-    animation: pointerPulse 2s infinite;
+    animation: pointerPulse 2s infinite; /* Mantener animación existente */
     pointer-events: none; /* Evitar que interfiera con clics */
 }
 
