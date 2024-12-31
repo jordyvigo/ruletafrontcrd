@@ -250,7 +250,9 @@ body {
     margin: 20px auto;
     width: 60vw;
     max-width: 600px;
-    height: auto;
+    height: 0;
+    padding-top: 60vw; /* Mantener proporción cuadrada */
+    max-height: 600px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -263,8 +265,8 @@ body {
     position: absolute;
     top: 0; 
     left: 0; 
-    right: 0; 
-    bottom: 0;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     background: radial-gradient(rgba(0,0,0,0.4), transparent 60%);
     z-index: 1;
@@ -272,8 +274,11 @@ body {
 }
 
 #wheelCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: auto;
+    height: 100%;
     border-radius: 50%;
     border: 15px solid var(--primary-color);
     box-shadow: 0 0 40px var(--primary-color), 0 0 80px var(--secondary-color) inset;
@@ -283,9 +288,9 @@ body {
 /* Mejoras en el Pointer Android */
 .android-pointer {
     position: absolute;
-    left: -20%; 
-    top: 50%;
-    transform: translateY(-50%) scale(1.2);
+    left: 50%; /* Centrado horizontal */
+    top: -30px; /* Posición arriba de la ruleta */
+    transform: translateX(-50%);
     width: 20%;
     height: auto;
     z-index: 100;
@@ -295,16 +300,16 @@ body {
 
 @keyframes androidDynamicMove {
     0%, 100% {
-        transform: translateY(-50%) translateX(0) rotate(0deg) scale(1.2);
+        transform: translateX(-50%) translateY(0) rotate(0deg);
     }
     25% {
-        transform: translateY(-50%) translateX(-10px) rotate(-10deg) scale(1.25);
+        transform: translateX(-50%) translateY(-10px) rotate(-10deg);
     }
     50% {
-        transform: translateY(-50%) translateX(-20px) rotate(0deg) scale(1.2);
+        transform: translateX(-50%) translateY(-20px) rotate(0deg);
     }
     75% {
-        transform: translateY(-50%) translateX(-10px) rotate(10deg) scale(1.25);
+        transform: translateX(-50%) translateY(-10px) rotate(10deg);
     }
 }
 
@@ -603,29 +608,17 @@ footer a:hover {
     /* Ajustes para Tablets y Dispositivos Medianos */
     .wheel-container {
         width: 90vw;
-        padding-left: 20px; /* Añadir padding para pointer */
+        padding-top: 90vw; /* Mantener proporción cuadrada */
+        max-height: 600px; /* Ajustar si es necesario */
     }
 
     #wheelCanvas {
-        width: 100%;
-        height: auto;
-    }
-
-    .prizes-list li {
-        width: 95%;
-    }
-
-    .modal, .popup {
-        /* Mantener display: flex */
-    }
-
-    .modal-content, .popup-content {
-        max-width: 90%;
+        border-width: 10px; /* Reducir grosor del borde en pantallas medianas */
     }
 
     .android-pointer {
-        width: 15%; /* Reducir tamaño */
-        left: -15%; /* Ajustar posición */
+        width: 15%;
+        top: -25px;
     }
 
     .spin-btn, .share-btn {
@@ -666,41 +659,26 @@ footer a:hover {
 @media (max-width: 480px) {
     /* Ajustes para Móviles */
     .android-pointer {
-        left: -25px; /* Aumentar desplazamiento en píxeles */
-        width: 18%; /* Ajustar tamaño */
-        transform: translateY(-50%) scale(1.1); /* Ajustar escala si es necesario */
+        width: 18%;
+        top: -20px;
     }
 
-    /* Asegurar que el pointer no invada la ruleta */
     .wheel-container {
-        padding-left: 30px; /* Añadir padding para dejar espacio al pointer */
-    }
-
-    /* Usar unidades relativas para una mejor responsividad */
-    .android-pointer {
-        left: -10vw; /* Desplazamiento basado en el ancho de la ventana */
-        width: 18vw;
-        transform: translateY(-50%) scale(1.1);
-    }
-
-    /* Estilizar el botón de compartir */
-    .share-btn {
-        width: 180px;
-        padding: 12px 25px;
-        font-size: 1.2em;
-    }
-
-    /* Ajustes adicionales para el canvas en móviles */
-    .wheel-container {
-        width: 90vw; /* Aumentar el ancho del contenedor en móviles */
+        width: 90vw;
+        padding-top: 90vw; /* Mantener proporción cuadrada */
+        max-height: 600px;
     }
 
     #wheelCanvas {
-        width: 100%;
-        height: auto;
+        border-width: 10px; /* Reducir grosor del borde en móviles */
     }
 
-    /* Ajustes para el Texto Principal */
+    .spin-btn, .share-btn {
+        width: 160px;
+        padding: 10px 20px;
+        font-size: 1.1em;
+    }
+
     .animated-text {
         font-size: 1.5em;
     }
