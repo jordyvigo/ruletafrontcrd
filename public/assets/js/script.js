@@ -1,6 +1,7 @@
-// /frontend/assets/js/script.js
+// frontend/assets/js/script.js
 
 document.addEventListener("DOMContentLoaded", async () => {
+    // Referencias a los elementos del DOM
     const spinButton = document.getElementById("spinButton");
     const submitData = document.getElementById("submitData");
     const loginModal = document.getElementById("loginModal");
@@ -12,10 +13,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const termsLink = document.querySelector('.terms-link');
     const termsModal = document.getElementById("termsModal");
     const closeTermsModalBtn = document.getElementById("closeTermsModal");
+    const playMusicButton = document.getElementById("playMusicButton"); // Nuevo botón
 
-    // Sonidos Correctamente Referenciados
+    // Sonidos correctamente referenciados
     const spinSound = new Audio("assets/sounds/spin.wav");
     const winSound = new Audio("assets/sounds/win.mp3");
+    const backgroundMusic = document.getElementById("backgroundMusic"); // Música de fondo
 
     // Estado del usuario
     const userState = {
@@ -104,7 +107,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 textFontSize: 18,
                 textFillStyle: "#FFFFFF",
                 textStrokeStyle: "#000000",
-				textLineWidth: 0.5, // Añadir esta línea para reducir el grosor del stroke
+                textLineWidth: 0.5, // Reducir el grosor del stroke
                 segments: data.segments,
                 responsive: true,
                 segmentsWidth: 1,
@@ -124,7 +127,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     easing: "Power4.easeOut", // Curva de easing más suave
                     callbackFinished: handleSpinResult // Función global
                 },
-                pointerAngle: 0, // Alinear con el puntero en el lado superior (0°)
+                pointerAngle: 0, // Alinear con el puntero en la posición rotada
             });
 
             wheel.draw();
@@ -339,6 +342,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             updateSpinButton();
             updatePrizesList();
             hideLoginModal();
+
+            // Mostrar el botón para reproducir la música de fondo
+            if (playMusicButton) {
+                playMusicButton.style.display = "block";
+                console.log("[submitUserData] Botón para reproducir música mostrado.");
+            }
         } catch (error) {
             console.error("[submitUserData] Error:", error.message);
             alert(`Hubo un problema al registrar: ${error.message}`);
@@ -633,6 +642,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (closeTermsModalBtn) {
         closeTermsModalBtn.addEventListener("click", hideTermsModal);
         console.log("[EventListener] 'closeTermsModalBtn' click listener añadido.");
+    }
+    if (playMusicButton && backgroundMusic) {
+        playMusicButton.addEventListener("click", () => {
+            backgroundMusic.play().then(() => {
+                console.log("[playMusicButton] Música de fondo reproducida.");
+                playMusicButton.style.display = "none"; // Ocultar el botón después de reproducir
+            }).catch(error => {
+                console.error("[playMusicButton] Error al reproducir la música de fondo:", error);
+            });
+        });
+        console.log("[EventListener] 'playMusicButton' click listener añadido.");
     }
 
     showLoginModal();

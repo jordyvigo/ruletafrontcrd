@@ -287,28 +287,126 @@ body {
 /* Mejoras en el Pointer Android */
 .android-pointer {
     position: absolute;
-    left: 50%; /* Centrado horizontal */
-    top: -30px; /* Posición arriba de la ruleta */
-    transform: translateX(-50%);
-    width: 20%;
+    left: -50px; /* Ajusta este valor según el tamaño del pointer y del contenedor */
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg); /* Rotación para apuntar hacia el centro de la ruleta */
+    width: 50px; /* Ajusta el tamaño según sea necesario */
     height: auto;
     z-index: 100;
-    animation: androidDynamicMove 1.5s infinite ease-in-out;
-    display: block;
+    animation: none; /* Desactivar animación si no es necesaria */
+    pointer-events: none; /* Evitar que interfiera con clics */
 }
 
-@keyframes androidDynamicMove {
-    0%, 100% {
-        transform: translateX(-50%) translateY(0) rotate(0deg);
+/* Ajustes para pantallas medianas */
+@media (max-width: 768px) {
+    .wheel-container {
+        width: 80vw;
+        aspect-ratio: 1 / 1; /* Mantener proporción */
+        max-height: 500px;
     }
-    25% {
-        transform: translateX(-50%) translateY(-10px) rotate(-10deg);
+
+    #wheelCanvas {
+        border-width: 10px; /* Reducir grosor del borde en pantallas medianas */
     }
-    50% {
-        transform: translateX(-50%) translateY(-20px) rotate(0deg);
+
+    .android-pointer {
+        left: -40px; /* Ajuste para pantallas medianas */
+        width: 40px;
     }
-    75% {
-        transform: translateX(-50%) translateY(-10px) rotate(10deg);
+
+    .spin-btn, .share-btn {
+        width: 180px;
+        padding: 12px 25px;
+        font-size: 1.2em;
+    }
+
+    .animated-text {
+        font-size: 2em;
+    }
+
+    .prizes-title {
+        font-size: 1.8em;
+    }
+
+    .prizes-list .prize-details {
+        font-size: 1em;
+    }
+
+    .popup-content {
+        padding: 20px 25px;
+    }
+
+    .popup-content h2 {
+        font-size: 1.8em;
+    }
+
+    .popup-content p {
+        font-size: 1.2em;
+    }
+
+    .prizes-section {
+        padding: 20px; 
+    }
+
+    /* Ajustar el tamaño del background en pantallas verticales */
+    body {
+        background-size: contain; /* Cambiar de cover a contain */
+    }
+}
+
+@media (max-width: 480px) {
+    .wheel-container {
+        width: 90vw;
+        aspect-ratio: 1 / 1; /* Mantener proporción */
+        max-height: 450px;
+    }
+
+    #wheelCanvas {
+        border-width: 8px; /* Reducir grosor del borde en móviles */
+    }
+
+    .android-pointer {
+        left: -35px; /* Ajustar para pantallas pequeñas */
+        width: 35px;
+    }
+
+    .spin-btn, .share-btn {
+        width: 160px;
+        padding: 10px 20px;
+        font-size: 1.1em;
+    }
+
+    .animated-text {
+        font-size: 1.5em;
+    }
+
+    .prizes-title {
+        font-size: 1.6em;
+    }
+
+    .prizes-list .prize-details {
+        font-size: 0.9em;
+    }
+
+    .popup-content {
+        padding: 15px 20px;
+    }
+
+    .popup-content h2 {
+        font-size: 1.6em;
+    }
+
+    .popup-content p {
+        font-size: 1em;
+    }
+
+    .prizes-section {
+        padding: 15px; 
+    }
+
+    /* Ajustar el tamaño del background en pantallas verticales */
+    body {
+        background-size: contain; /* Cambiar de cover a contain */
     }
 }
 
@@ -531,33 +629,143 @@ body {
     font-weight: bold;
 }
 
-/* ========== FOOTER ========= */
-footer {
-    background: rgba(0,0,0,0.8);
-    padding: 25px 0;
-    color: var(--primary-color);
-    text-shadow: 1px 1px 5px black;
-    font-size: 1em;
+/* ========== BOTÓN DE MUSICA ========= */
+.play-music-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--button-primary);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50%;
+    font-size: 1.5em;
+    cursor: pointer;
+    box-shadow: 0 0 15px var(--secondary-color);
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    z-index: 1000;
+    display: none; /* Ocultar inicialmente */
 }
 
-footer a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: bold;
+.play-music-btn:hover {
+    background: var(--secondary-color);
+    box-shadow: 0 0 25px var(--secondary-color);
+    transform: scale(1.1);
 }
 
-footer a:hover {
-    text-decoration: underline;
+/* ========== RESPONSIVE DESIGN ========= */
+@media (max-width: 768px) {
+    /* Ajustes para Tablets y Dispositivos Medianos */
+    .wheel-container {
+        width: 80vw;
+        aspect-ratio: 1 / 1; /* Mantener proporción */
+        max-height: 500px;
+    }
+
+    #wheelCanvas {
+        border-width: 10px; /* Reducir grosor del borde en pantallas medianas */
+    }
+
+    .android-pointer {
+        left: -40px; /* Ajuste para pantallas medianas */
+        width: 40px;
+    }
+
+    .spin-btn, .share-btn {
+        width: 180px;
+        padding: 12px 25px;
+        font-size: 1.2em;
+    }
+
+    .animated-text {
+        font-size: 2em;
+    }
+
+    .prizes-title {
+        font-size: 1.8em;
+    }
+
+    .prizes-list .prize-details {
+        font-size: 1em;
+    }
+
+    .popup-content {
+        padding: 20px 25px;
+    }
+
+    .popup-content h2 {
+        font-size: 1.8em;
+    }
+
+    .popup-content p {
+        font-size: 1.2em;
+    }
+
+    .prizes-section {
+        padding: 20px; 
+    }
+
+    /* Ajustar el tamaño del background en pantallas verticales */
+    body {
+        background-size: contain; /* Cambiar de cover a contain */
+    }
 }
 
-.terms-link {
-    color: var(--primary-color);
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
+@media (max-width: 480px) {
+    /* Ajustes para Móviles */
+    .wheel-container {
+        width: 90vw;
+        aspect-ratio: 1 / 1; /* Mantener proporción */
+        max-height: 450px;
+    }
 
-.terms-link:hover {
-    color: var(--secondary-color);
+    #wheelCanvas {
+        border-width: 8px; /* Reducir grosor del borde en móviles */
+    }
+
+    .android-pointer {
+        left: -35px; /* Ajustar para pantallas pequeñas */
+        width: 35px;
+    }
+
+    .spin-btn, .share-btn {
+        width: 160px;
+        padding: 10px 20px;
+        font-size: 1.1em;
+    }
+
+    .animated-text {
+        font-size: 1.5em;
+    }
+
+    .prizes-title {
+        font-size: 1.6em;
+    }
+
+    .prizes-list .prize-details {
+        font-size: 0.9em;
+    }
+
+    .popup-content {
+        padding: 15px 20px;
+    }
+
+    .popup-content h2 {
+        font-size: 1.6em;
+    }
+
+    .popup-content p {
+        font-size: 1em;
+    }
+
+    .prizes-section {
+        padding: 15px; 
+    }
+
+    /* Ajustar el tamaño del background en pantallas verticales */
+    body {
+        background-size: contain; /* Cambiar de cover a contain */
+    }
 }
 
 /* ========== SNOWFALL ========= */
@@ -602,107 +810,17 @@ footer a:hover {
     font-size: 1.5em;
 }
 
+/* ========== BOTONES DE ACCIÓN ========= */
+/* ... Código de botones existente ... */
+
+/* ========== POPUP DE PREMIO ========= */
+/* ... Código de popup existente ... */
+
+/* ========== LISTA DE PREMIOS ========= */
+/* ... Código de lista de premios existente ... */
+
+/* ========== BOTÓN DE MUSICA ========= */
+/* ... Código de botón de música existente ... */
+
 /* ========== RESPONSIVE DESIGN ========= */
-@media (max-width: 768px) {
-    /* Ajustes para Tablets y Dispositivos Medianos */
-    .wheel-container {
-        width: 80vw;
-        aspect-ratio: 1 / 1; /* Mantener proporción */
-        max-height: 500px;
-    }
-
-    #wheelCanvas {
-        border-width: 10px; /* Reducir grosor del borde en pantallas medianas */
-    }
-
-    .android-pointer {
-        width: 15%;
-        top: -25px;
-    }
-
-    .spin-btn, .share-btn {
-        width: 180px;
-        padding: 12px 25px;
-        font-size: 1.2em;
-    }
-
-    .animated-text {
-        font-size: 2em;
-    }
-
-    .prizes-title {
-        font-size: 1.8em;
-    }
-
-    .prizes-list .prize-details {
-        font-size: 1em;
-    }
-
-    .popup-content {
-        padding: 20px 25px;
-    }
-
-    .popup-content h2 {
-        font-size: 1.8em;
-    }
-
-    .popup-content p {
-        font-size: 1.2em;
-    }
-
-    .prizes-section {
-        padding: 20px; 
-    }
-}
-
-@media (max-width: 480px) {
-    /* Ajustes para Móviles */
-    .wheel-container {
-        width: 90vw;
-        aspect-ratio: 1 / 1; /* Mantener proporción */
-        max-height: 450px;
-    }
-
-    #wheelCanvas {
-        border-width: 8px; /* Reducir grosor del borde en móviles */
-    }
-
-    .android-pointer {
-        width: 18%;
-        top: -20px;
-    }
-
-    .spin-btn, .share-btn {
-        width: 160px;
-        padding: 10px 20px;
-        font-size: 1.1em;
-    }
-
-    .animated-text {
-        font-size: 1.5em;
-    }
-
-    .prizes-title {
-        font-size: 1.6em;
-    }
-
-    .prizes-list .prize-details {
-        font-size: 0.9em;
-    }
-
-    .popup-content {
-        padding: 15px 20px;
-    }
-
-    .popup-content h2 {
-        font-size: 1.6em;
-    }
-
-    .popup-content p {
-        font-size: 1em;
-    }
-
-    .prizes-section {
-        padding: 15px; 
-    }
-}
+/* ... Código de responsive existente ... */
