@@ -31,6 +31,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     let isSpinning = false; // Estado para controlar si la ruleta está girando
 
     /**
+     * Definir la función getResponsiveFontSize
+     */
+    function getResponsiveFontSize() {
+        const width = window.innerWidth;
+        if (width > 1200) return 24;
+        if (width > 992) return 20;
+        if (width > 768) return 16;
+        return 14;
+    }
+
+    /**
      * Manejar resultado del giro (Definido en el ámbito global)
      */
     window.handleSpinResult = function(indicatedSegment, wheelInstance) {
@@ -227,13 +238,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             wheel.draw();
             console.log("[handleResize] Canvas redimensionado y ruleta redibujada.");
         }
-    }
-
-    /**
-     * Compartir en Facebook
-     */
-    async function shareOnFacebook() {
-        // Función ya implementada arriba
     }
 
     /**
@@ -715,6 +719,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         });
     }
+
+    // Event Listener para redimensionar la ventana
+    window.addEventListener('resize', handleResize);
 
     // Inicializar la aplicación
     initializeApp();
