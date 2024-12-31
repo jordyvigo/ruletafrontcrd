@@ -250,8 +250,7 @@ body {
     margin: 20px auto;
     width: 60vw;
     max-width: 600px;
-    height: 0;
-    padding-top: 60vw; /* Mantener proporción cuadrada */
+    aspect-ratio: 1 / 1; /* Mantener proporción cuadrada */
     max-height: 600px;
     display: flex;
     justify-content: center;
@@ -607,9 +606,9 @@ footer a:hover {
 @media (max-width: 768px) {
     /* Ajustes para Tablets y Dispositivos Medianos */
     .wheel-container {
-        width: 90vw;
-        padding-top: 90vw; /* Mantener proporción cuadrada */
-        max-height: 600px; /* Ajustar si es necesario */
+        width: 80vw;
+        aspect-ratio: 1 / 1; /* Mantener proporción */
+        max-height: 500px;
     }
 
     #wheelCanvas {
@@ -658,19 +657,19 @@ footer a:hover {
 
 @media (max-width: 480px) {
     /* Ajustes para Móviles */
-    .android-pointer {
-        width: 18%;
-        top: -20px;
-    }
-
     .wheel-container {
         width: 90vw;
-        padding-top: 90vw; /* Mantener proporción cuadrada */
-        max-height: 600px;
+        aspect-ratio: 1 / 1; /* Mantener proporción */
+        max-height: 450px;
     }
 
     #wheelCanvas {
-        border-width: 10px; /* Reducir grosor del borde en móviles */
+        border-width: 8px; /* Reducir grosor del borde en móviles */
+    }
+
+    .android-pointer {
+        width: 18%;
+        top: -20px;
     }
 
     .spin-btn, .share-btn {
