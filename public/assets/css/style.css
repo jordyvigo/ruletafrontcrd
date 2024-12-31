@@ -181,6 +181,57 @@ body {
     position: relative;
 }
 
+/* Estilos del Texto Principal Dinámico */
+.animated-text {
+    position: relative;
+    display: inline-block;
+    animation: pulse 2s infinite;
+    color: var(--primary-color);
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+    font-size: 2.5em;
+    font-family: var(--casino-font);
+}
+
+/* Animación de Pulso */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Efecto de Resplandor Continuo */
+.animated-text::after {
+    content: '';
+    position: absolute;
+    top: -5%;
+    left: -5%;
+    width: 110%;
+    height: 110%;
+    border-radius: 50%;
+    background: rgba(255, 215, 0, 0.2);
+    animation: glow 3s infinite alternate;
+    z-index: -1;
+}
+
+/* Animación de Resplandor */
+@keyframes glow {
+    from {
+        box-shadow: 0 0 10px var(--primary-color);
+    }
+    to {
+        box-shadow: 0 0 20px var(--secondary-color);
+    }
+}
+
 .main-title {
     font-family: var(--casino-font);
     font-size: 2.5em;
@@ -549,8 +600,10 @@ footer a:hover {
 
 /* ========== RESPONSIVE DESIGN ========= */
 @media (max-width: 768px) {
+    /* Ajustes para Tablets y Dispositivos Medianos */
     .wheel-container {
         width: 90vw;
+        padding-left: 20px; /* Añadir padding para pointer */
     }
 
     #wheelCanvas {
@@ -572,7 +625,7 @@ footer a:hover {
 
     .android-pointer {
         width: 15%; /* Reducir tamaño */
-        left: -10%; /* Ajustar posición */
+        left: -15%; /* Ajustar posición */
     }
 
     .spin-btn, .share-btn {
@@ -581,7 +634,7 @@ footer a:hover {
         font-size: 1.2em;
     }
 
-    .main-title {
+    .animated-text {
         font-size: 2em;
     }
 
@@ -611,8 +664,68 @@ footer a:hover {
 }
 
 @media (max-width: 480px) {
+    /* Ajustes para Móviles */
     .android-pointer {
-        left: -15px; /* Ajuste adicional de posición */
-        width: 20%; /* Reducir aún más el tamaño */
+        left: -25px; /* Aumentar desplazamiento en píxeles */
+        width: 18%; /* Ajustar tamaño */
+        transform: translateY(-50%) scale(1.1); /* Ajustar escala si es necesario */
+    }
+
+    /* Asegurar que el pointer no invada la ruleta */
+    .wheel-container {
+        padding-left: 30px; /* Añadir padding para dejar espacio al pointer */
+    }
+
+    /* Usar unidades relativas para una mejor responsividad */
+    .android-pointer {
+        left: -10vw; /* Desplazamiento basado en el ancho de la ventana */
+        width: 18vw;
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    /* Estilizar el botón de compartir */
+    .share-btn {
+        width: 180px;
+        padding: 12px 25px;
+        font-size: 1.2em;
+    }
+
+    /* Ajustes adicionales para el canvas en móviles */
+    .wheel-container {
+        width: 90vw; /* Aumentar el ancho del contenedor en móviles */
+    }
+
+    #wheelCanvas {
+        width: 100%;
+        height: auto;
+    }
+
+    /* Ajustes para el Texto Principal */
+    .animated-text {
+        font-size: 1.5em;
+    }
+
+    .prizes-title {
+        font-size: 1.6em;
+    }
+
+    .prizes-list .prize-details {
+        font-size: 0.9em;
+    }
+
+    .popup-content {
+        padding: 15px 20px;
+    }
+
+    .popup-content h2 {
+        font-size: 1.6em;
+    }
+
+    .popup-content p {
+        font-size: 1em;
+    }
+
+    .prizes-section {
+        padding: 15px; 
     }
 }

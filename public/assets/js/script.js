@@ -1,4 +1,4 @@
-// /frontend/assets/js/script.js
+// frontend/assets/js/script.js
 
 document.addEventListener("DOMContentLoaded", async () => {
     const spinButton = document.getElementById("spinButton");
@@ -77,6 +77,51 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     /**
+     * Compartir en Facebook usando la Web Share API con un fallback a la URL de Facebook.
+     */
+    async function shareOnFacebook() {
+        const shareText = "LLEVATE UNA RADIO 100% GRATIS CON LA RULETA CARDROID";
+        const url = window.location.href;
+        const title = "Cardroid Ruleta";
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: title,
+                    text: shareText,
+                    url: url,
+                });
+                console.log('Contenido compartido exitosamente mediante Web Share API');
+            } catch (error) {
+                console.error('Error al compartir mediante Web Share API:', error);
+                // Intentar abrir la aplicación de Facebook como fallback
+                openFacebookApp(url, shareText);
+            }
+        } else {
+            // Intentar abrir la aplicación de Facebook como fallback
+            openFacebookApp(url, shareText);
+        }
+    }
+
+    /**
+     * Intentar abrir la aplicación de Facebook y fallback a la URL web de compartir.
+     */
+    function openFacebookApp(url, text) {
+        const encodedUrl = encodeURIComponent(url);
+        const encodedText = encodeURIComponent(text);
+        const fbAppURL = `fb://facewebmodal/f?href=https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`;
+        const fbWebURL = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`;
+
+        // Intentar abrir la aplicación de Facebook
+        window.open(fbAppURL, '_blank');
+
+        // Fallback a la URL web después de 500 ms
+        setTimeout(() => {
+            window.open(fbWebURL, '_blank', 'width=600,height=400');
+        }, 500);
+    }
+
+    /**
      * Inicializar la ruleta
      */
     async function initializeWheel() {
@@ -94,6 +139,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             console.log("[initializeWheel] Segmentos recibidos:", data.segments);
 
+            // Obtener el canvas y su contexto
+            const canvas = document.getElementById("wheelCanvas");
+            const ctx = canvas.getContext("2d");
+
+            // Obtener el devicePixelRatio
+            const dpr = window.devicePixelRatio || 1;
+
+            // Obtener el tamaño lógico del canvas
+            const rect = canvas.getBoundingClientRect();
+
+            // Ajustar el tamaño físico del canvas
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+
+            // Escalar el contexto para compensar el devicePixelRatio
+            ctx.scale(dpr, dpr);
+
             // Configurar la ruleta con pointerAngle: 0°
             wheel = new Winwheel({
                 canvasId: "wheelCanvas",
@@ -101,10 +163,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 startAngle: 0, // Establecer a 0°
                 textAlignment: "outer",
                 textOrientation: "horizontal",
-                textFontSize: 18,
+                textFontSize: getResponsiveFontSize(), // Tamaño de fuente responsivo
                 textFillStyle: "#FFFFFF",
                 textStrokeStyle: "#000000",
-				textLineWidth: 0.5, // Añadir esta línea para reducir el grosor del stroke
+                textLineWidth: 1, // Reducir el grosor del stroke
                 segments: data.segments,
                 responsive: true,
                 segmentsWidth: 1,
@@ -137,37 +199,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     /**
-     * Compartir en Facebook con un mensaje personalizado
+     * Manejar la redimensión del canvas y redibujar la ruleta
+     */
+    function handleResize() {
+        if (wheel) {
+            // Obtener el canvas y su contexto
+            const canvas = document.getElementById("wheelCanvas");
+            const ctx = canvas.getContext("2d");
+
+            // Obtener el devicePixelRatio
+            const dpr = window.devicePixelRatio || 1;
+
+            // Obtener el tamaño lógico del canvas
+            const rect = canvas.getBoundingClientRect();
+
+            // Ajustar el tamaño físico del canvas
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+
+            // Escalar el contexto para compensar el devicePixelRatio
+            ctx.scale(dpr, dpr);
+
+            // Actualizar el tamaño de la fuente
+            wheel.textFontSize = getResponsiveFontSize();
+
+            // Volver a dibujar la ruleta con las nuevas configuraciones
+            wheel.draw();
+            console.log("[handleResize] Canvas redimensionado y ruleta redibujada.");
+        }
+    }
+
+    /**
+     * Compartir en Facebook
      */
     async function shareOnFacebook() {
-        const shareText = "LLEVATE UNA RADIO 100% GRATIS CON LA RULETA CARDROID";
-        const url = encodeURIComponent(window.location.href);
-        const message = encodeURIComponent(shareText);
-        const shareURL = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${message}`;
-        window.open(shareURL, '_blank', 'width=600,height=400');
-
-        try {
-            const response = await fetch("https://ruletabackcardroid.vercel.app/api/share", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ plate: userState.plate }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                userState.spinsAvailable = data.spinsAvailable;
-                updateSpinButton();
-                alert(data.message);
-                console.log("[shareOnFacebook] Giros actualizados:", userState.spinsAvailable);
-            } else {
-                alert(data.message || "No se pudo añadir giros adicionales.");
-                console.warn("[shareOnFacebook] Problema al añadir giros adicionales:", data.message);
-            }
-        } catch (error) {
-            console.error("[shareOnFacebook] Error:", error.message);
-            alert("Hubo un problema al procesar tu solicitud. Intenta nuevamente más tarde.");
-        }
+        // Función ya implementada arriba
     }
 
     /**
@@ -635,6 +701,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("[EventListener] 'closeTermsModalBtn' click listener añadido.");
     }
 
-    showLoginModal();
+    // Manejar la reproducción de la música de fondo mediante interacción del usuario
+    const playMusicButton = document.getElementById("playMusicButton");
+    const backgroundMusic = document.getElementById("backgroundMusic");
+
+    if (playMusicButton && backgroundMusic) {
+        playMusicButton.addEventListener("click", () => {
+            backgroundMusic.play().then(() => {
+                playMusicButton.style.display = 'none'; // Ocultar el botón después de iniciar la música
+                console.log("[Audio] Música de fondo reproducida.");
+            }).catch((error) => {
+                console.error("Error al reproducir la música de fondo:", error);
+            });
+        });
+    }
+
+    // Inicializar la aplicación
     initializeApp();
 });
