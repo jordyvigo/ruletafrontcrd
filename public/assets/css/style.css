@@ -284,130 +284,46 @@ body {
     transition: all 0.3s ease;
 }
 
-/* Mejoras en el Pointer Android */
+/* ========== POINTER ANDROID ========= */
 .android-pointer {
     position: absolute;
-    left: -50px; /* Ajusta este valor según el tamaño del pointer y del contenedor */
+    right: -60px; /* Posicionar fuera del contenedor hacia la derecha */
     top: 50%;
-    transform: translateY(-50%) rotate(90deg); /* Rotación para apuntar hacia el centro de la ruleta */
-    width: 50px; /* Ajusta el tamaño según sea necesario */
+    transform: translateY(-50%); /* Centrado vertical */
+    width: 70px; /* Aumentar el tamaño del pointer */
     height: auto;
     z-index: 100;
-    animation: none; /* Desactivar animación si no es necesaria */
+    animation: pointerPulse 2s infinite;
     pointer-events: none; /* Evitar que interfiera con clics */
 }
 
-/* Ajustes para pantallas medianas */
-@media (max-width: 768px) {
-    .wheel-container {
-        width: 80vw;
-        aspect-ratio: 1 / 1; /* Mantener proporción */
-        max-height: 500px;
+/* Animación de pulso para el pointer */
+@keyframes pointerPulse {
+    0% {
+        transform: translateY(-50%) scale(1);
+        opacity: 1;
     }
-
-    #wheelCanvas {
-        border-width: 10px; /* Reducir grosor del borde en pantallas medianas */
+    50% {
+        transform: translateY(-50%) scale(1.1);
+        opacity: 0.8;
     }
-
-    .android-pointer {
-        left: -40px; /* Ajuste para pantallas medianas */
-        width: 40px;
-    }
-
-    .spin-btn, .share-btn {
-        width: 180px;
-        padding: 12px 25px;
-        font-size: 1.2em;
-    }
-
-    .animated-text {
-        font-size: 2em;
-    }
-
-    .prizes-title {
-        font-size: 1.8em;
-    }
-
-    .prizes-list .prize-details {
-        font-size: 1em;
-    }
-
-    .popup-content {
-        padding: 20px 25px;
-    }
-
-    .popup-content h2 {
-        font-size: 1.8em;
-    }
-
-    .popup-content p {
-        font-size: 1.2em;
-    }
-
-    .prizes-section {
-        padding: 20px; 
-    }
-
-    /* Ajustar el tamaño del background en pantallas verticales */
-    body {
-        background-size: contain; /* Cambiar de cover a contain */
+    100% {
+        transform: translateY(-50%) scale(1);
+        opacity: 1;
     }
 }
 
-@media (max-width: 480px) {
-    .wheel-container {
-        width: 90vw;
-        aspect-ratio: 1 / 1; /* Mantener proporción */
-        max-height: 450px;
-    }
+/* Animación durante el giro de la ruleta */
+.wheel-spinning .android-pointer {
+    animation: pointerShake 0.5s infinite;
+}
 
-    #wheelCanvas {
-        border-width: 8px; /* Reducir grosor del borde en móviles */
-    }
-
-    .android-pointer {
-        left: -35px; /* Ajustar para pantallas pequeñas */
-        width: 35px;
-    }
-
-    .spin-btn, .share-btn {
-        width: 160px;
-        padding: 10px 20px;
-        font-size: 1.1em;
-    }
-
-    .animated-text {
-        font-size: 1.5em;
-    }
-
-    .prizes-title {
-        font-size: 1.6em;
-    }
-
-    .prizes-list .prize-details {
-        font-size: 0.9em;
-    }
-
-    .popup-content {
-        padding: 15px 20px;
-    }
-
-    .popup-content h2 {
-        font-size: 1.6em;
-    }
-
-    .popup-content p {
-        font-size: 1em;
-    }
-
-    .prizes-section {
-        padding: 15px; 
-    }
-
-    /* Ajustar el tamaño del background en pantallas verticales */
-    body {
-        background-size: contain; /* Cambiar de cover a contain */
-    }
+@keyframes pointerShake {
+    0% { transform: translateY(-50%) rotate(0deg); }
+    25% { transform: translateY(-50%) rotate(5deg); }
+    50% { transform: translateY(-50%) rotate(-5deg); }
+    75% { transform: translateY(-50%) rotate(5deg); }
+    100% { transform: translateY(-50%) rotate(0deg); }
 }
 
 /* ========== BOTONES DE ACCIÓN ========= */
@@ -667,8 +583,8 @@ body {
     }
 
     .android-pointer {
-        left: -40px; /* Ajuste para pantallas medianas */
-        width: 40px;
+        right: -50px; /* Ajustar según el nuevo tamaño */
+        width: 60px; /* Reducir tamaño para pantallas medianas */
     }
 
     .spin-btn, .share-btn {
@@ -724,8 +640,8 @@ body {
     }
 
     .android-pointer {
-        left: -35px; /* Ajustar para pantallas pequeñas */
-        width: 35px;
+        right: -40px; /* Ajustar según el nuevo tamaño */
+        width: 50px; /* Reducir tamaño para pantallas pequeñas */
     }
 
     .spin-btn, .share-btn {
@@ -809,18 +725,3 @@ body {
     animation-duration: 10s;
     font-size: 1.5em;
 }
-
-/* ========== BOTONES DE ACCIÓN ========= */
-/* ... Código de botones existente ... */
-
-/* ========== POPUP DE PREMIO ========= */
-/* ... Código de popup existente ... */
-
-/* ========== LISTA DE PREMIOS ========= */
-/* ... Código de lista de premios existente ... */
-
-/* ========== BOTÓN DE MUSICA ========= */
-/* ... Código de botón de música existente ... */
-
-/* ========== RESPONSIVE DESIGN ========= */
-/* ... Código de responsive existente ... */

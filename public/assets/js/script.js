@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const termsModal = document.getElementById("termsModal");
     const closeTermsModalBtn = document.getElementById("closeTermsModal");
     const playMusicButton = document.getElementById("playMusicButton"); // Nuevo botón
+    const wheelContainer = document.querySelector('.wheel-container'); // Referencia al contenedor de la ruleta
 
     // Sonidos correctamente referenciados
     const spinSound = new Audio("assets/sounds/spin.wav");
@@ -69,6 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } finally {
             isSpinning = false;
             updateSpinButton(); // Re-evaluar el estado del botón
+            wheelContainer.classList.remove('wheel-spinning'); // Remover clase de animación
             console.log("[handleSpinResult] Estado 'isSpinning' establecido a false.");
         }
 
@@ -97,7 +99,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             console.log("[initializeWheel] Segmentos recibidos:", data.segments);
 
-            // Configurar la ruleta con pointerAngle: 0°
+            // Configurar la ruleta con pointerAngle: 170°
             wheel = new Winwheel({
                 canvasId: "wheelCanvas",
                 numSegments: data.segments.length,
@@ -127,7 +129,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     easing: "Power4.easeOut", // Curva de easing más suave
                     callbackFinished: handleSpinResult // Función global
                 },
-                pointerAngle: 0, // Alinear con el puntero en la posición rotada
+                pointerAngle: 0, // No se necesita rotación adicional
             });
 
             wheel.draw();
@@ -192,6 +194,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         isSpinning = true;
         spinButton.disabled = true;
+        wheelContainer.classList.add('wheel-spinning'); // Añadir clase para animación del pointer
         console.log("[spinWheel] Iniciando giro. Giros disponibles antes del giro:", userState.spinsAvailable);
 
         try {
@@ -249,6 +252,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             alert(`Hubo un problema: ${error.message}`);
             isSpinning = false;
             spinButton.disabled = userState.spinsAvailable <= 0;
+            wheelContainer.classList.remove('wheel-spinning'); // Remover clase en caso de error
         }
     }
 
