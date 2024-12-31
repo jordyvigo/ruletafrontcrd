@@ -27,7 +27,7 @@ body {
     padding: 0;
     font-family: var(--font-family);
     background: url('../images/fondo.png') no-repeat center center fixed;
-    background-size: cover;
+    background-size: cover; /* Mantener cover para que cubra toda la pantalla */
     color: white;
     text-align: center;
     overflow-x: hidden;
@@ -287,13 +287,13 @@ body {
 /* ========== POINTER ANDROID ========= */
 .android-pointer {
     position: absolute;
-    left: -80px; /* Posicionar fuera del contenedor hacia la izquierda. Ajusta según sea necesario */
+    left: -80px; /* Posicionar parcialmente fuera del contenedor hacia la izquierda */
     top: 50%;
     transform: translateY(-50%); /* Centrado vertical */
     width: 90px; /* Aumentar el tamaño del pointer */
     height: auto;
     z-index: 100;
-    animation: pointerPulse 2s infinite; /* Mantener animación existente */
+    animation: pointerPulse 2s infinite;
     pointer-events: none; /* Evitar que interfiera con clics */
 }
 
@@ -583,8 +583,8 @@ body {
     }
 
     .android-pointer {
-        right: -50px; /* Ajustar según el nuevo tamaño */
-        width: 60px; /* Reducir tamaño para pantallas medianas */
+        left: -60px; /* Reducir desplazamiento para que el pointer sea visible */
+        width: 70px; /* Reducir tamaño para pantallas medianas */
     }
 
     .spin-btn, .share-btn {
@@ -621,9 +621,9 @@ body {
         padding: 20px; 
     }
 
-    /* Ajustar el tamaño del background en pantallas verticales */
+    /* Mantener el fondo cubriendo toda la pantalla */
     body {
-        background-size: contain; /* Cambiar de cover a contain */
+        background-size: cover; /* Cambiar de contain a cover */
     }
 }
 
@@ -640,8 +640,8 @@ body {
     }
 
     .android-pointer {
-        right: -40px; /* Ajustar según el nuevo tamaño */
-        width: 50px; /* Reducir tamaño para pantallas pequeñas */
+        left: -50px; /* Reducir aún más el desplazamiento */
+        width: 60px; /* Reducir tamaño para pantallas pequeñas */
     }
 
     .spin-btn, .share-btn {
@@ -678,9 +678,9 @@ body {
         padding: 15px; 
     }
 
-    /* Ajustar el tamaño del background en pantallas verticales */
+    /* Mantener el fondo cubriendo toda la pantalla */
     body {
-        background-size: contain; /* Cambiar de cover a contain */
+        background-size: cover; /* Cambiar de contain a cover */
     }
 }
 
