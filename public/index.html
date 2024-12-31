@@ -1,5 +1,3 @@
-<!-- frontend/public/index.html -->
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,6 +7,19 @@
     <title>LLEVATE UNA RADIO 100% GRATIS CON LA RULETA CARDROID</title>
     <!-- CSS Correctamente Referenciado -->
     <link rel="stylesheet" href="assets/css/style.css"/>
+
+    <!-- Meta Tags Open Graph -->
+    <meta property="og:title" content="¡Gira la Ruleta Cardroid y Llévate una Radio Android Gratis!" />
+    <meta property="og:description" content="Participa en nuestra emocionante ruleta y gana increíbles premios, regalos y descuentos exclusivos. ¡No te lo pierdas!" />
+    <meta property="og:image" content="https://cardroid.ruleta.com/assets/images/preview.jpg" />
+    <meta property="og:url" content="https://cardroid.ruleta.com/" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Card (Opcional) -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="¡Gira la Ruleta Cardroid y Llévate una Radio Android Gratis!" />
+    <meta name="twitter:description" content="Participa en nuestra emocionante ruleta y gana increíbles premios, regalos y descuentos exclusivos. ¡No te lo pierdas!" />
+    <meta name="twitter:image" content="https://cardroid.ruleta.com/assets/images/preview.jpg" />
 
     <!-- Librerías necesarias -->
     <!-- GSAP 3.x -->
@@ -21,16 +32,22 @@
     <script src="assets/js/libs/Winwheel.js" defer></script>
 </head>
 <body>
+    <!-- Pantalla de Carga -->
+    <div id="loadingScreen" class="loading-screen" aria-hidden="true">
+        <div class="spinner"></div>
+    </div>
+
     <!-- Música de fondo Correctamente Referenciada -->
     <audio id="backgroundMusic" src="assets/sounds/fondo.mp3" loop></audio>
 
-    <!-- Botón para reproducir la música de fondo -->
-    <button id="playMusicButton" class="play-music-btn">🎵 Reproducir Música de Fondo</button>
+    <!-- Botón para reproducir/pausar la música de fondo -->
+    <button id="toggleMusicButton" class="music-toggle-btn paused" aria-label="Reproducir Música de Fondo">
+        ▶️
+    </button>
 
     <!-- Modal de Registro -->
     <div id="loginModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modalTitle">
         <div class="modal-content">
-            <!-- Botón de cerrar eliminado para cumplir con el requerimiento -->
             <h2 id="modalTitle">Registra tus Datos</h2>
             <form id="registrationForm">
                 <div class="form-group">
@@ -120,12 +137,9 @@
                     <img src="assets/images/android.png" alt="Android señalando" class="android-pointer" />
                     <canvas 
                         id="wheelCanvas" 
-                        width="500" 
-                        height="500"
                         data-responsiveMinWidth="180"
                         data-responsiveScaleHeight="true"
-                    >
-                    </canvas>
+                    ></canvas>
                 </div>
             </section>
 
