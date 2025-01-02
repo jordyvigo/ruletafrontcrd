@@ -63,7 +63,7 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 20000;
-    overflow-y: auto;
+    overflow-y: auto; /* Permitir scroll si el contenido excede la altura */
     animation: fadeIn 0.7s ease-in-out;
 }
 
@@ -78,11 +78,30 @@ body {
     width: 90%;
     position: relative;
     animation: fadeIn 0.7s ease-in-out;
+    max-height: 80vh; /* Limitar la altura máxima al 80% del viewport */
+    overflow-y: auto; /* Permitir scroll interno */
 }
 
 .popup-content {
     background: var(--popup-background);
     max-width: 450px;
+}
+
+/* Botón de Cierre de Modales */
+.close-popup-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-popup-btn:hover {
+    color: var(--button-danger);
 }
 
 /* ========== MODAL DE REGISTRO ========= */
@@ -108,7 +127,7 @@ body {
     width: 100%;
     border: 2px solid #555; 
     border-radius: 8px;
-    font-size: 1.1em; 
+    font-size: 16px; /* Aumentar tamaño de fuente para evitar zoom en móviles */
     background: #222; 
     color: var(--primary-color);
     outline: none; 
@@ -222,7 +241,6 @@ body {
     z-index: -1;
 }
 
-/* Animación de Resplandor */
 @keyframes glow {
     from {
         box-shadow: 0 0 10px var(--primary-color);
@@ -546,24 +564,26 @@ body {
 }
 
 /* ========== BOTÓN DE MUSICA ========= */
-.play-music-btn {
+.music-toggle-btn {
     position: fixed;
     bottom: 20px;
     right: 20px;
     background: var(--button-primary);
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 15px;
     border-radius: 50%;
     font-size: 1.5em;
     cursor: pointer;
     box-shadow: 0 0 15px var(--secondary-color);
     transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
     z-index: 1000;
-    display: none; /* Ocultar inicialmente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.play-music-btn:hover {
+.music-toggle-btn:hover {
     background: var(--secondary-color);
     box-shadow: 0 0 25px var(--secondary-color);
     transform: scale(1.1);
@@ -724,4 +744,1249 @@ body {
     left: calc(20% + 10px);
     animation-duration: 10s;
     font-size: 1.5em;
+}
+
+/* ========== BOTONES DE ACCIÓN ========= */
+.buttons-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.spin-btn, .share-btn {
+    width: 220px;
+    padding: 15px 30px;
+    margin: 10px;
+    font-size: 1.4em;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 0 25px var(--secondary-color);
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    font-family: var(--casino-font);
+    z-index: 2;
+}
+
+.spin-btn {
+    background: linear-gradient(45deg, var(--button-primary), var(--secondary-color));
+    color: white;
+}
+
+.spin-btn:hover {
+    background: linear-gradient(45deg, var(--secondary-color), #FF6347);
+    box-shadow: 0 0 35px #FF6347;
+    transform: scale(1.05);
+}
+
+.spin-btn:disabled {
+    background: #555;
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.share-btn {
+    background: var(--button-secondary);
+    color: white;
+}
+
+.share-btn:hover {
+    background: #365899;
+    box-shadow: 0 0 30px #365899;
+    transform: scale(1.05);
+}
+
+/* ========== POPUP DE PREMIO ========= */
+.popup h2 {
+    margin: 0;
+    font-size: 2.2em;
+    color: var(--primary-color);
+    font-family: var(--casino-font);
+    text-shadow: 2px 2px 10px rgba(255, 215, 0, 0.6);
+}
+
+.popup p {
+    margin: 20px 0;
+    font-size: 1.4em;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+}
+
+.popup .prize-actions {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.popup .prize-actions button,
+.popup .prize-actions a {
+    background: var(--button-success);
+    color: white;
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.3s ease;
+    margin: 10px 0;
+    border: none;
+    cursor: pointer;
+}
+
+.popup .prize-actions a {
+    background: var(--button-secondary);
+}
+
+.popup .prize-actions button:hover,
+.popup .prize-actions a:hover {
+    background: #1DA653;
+    transform: scale(1.05);
+}
+
+/* ========== LISTA DE PREMIOS ========= */
+.prizes-section {
+    margin-top: 40px;
+    padding: 25px;
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 20px var(--primary-color);
+}
+
+.prizes-title {
+    font-family: var(--casino-font);
+    text-shadow: 2px 2px 8px black;
+    font-size: 2em;
+    color: var(--primary-color);
+    margin-bottom: 25px;
+}
+
+.prizes-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.prizes-list li {
+    background-color: rgba(0, 0, 0, 0.5);
+    margin: 15px auto;
+    padding: 15px;
+    width: 90%;
+    max-width: 550px;
+    border: 2px solid var(--primary-color);
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s, background-color 0.3s;
+}
+
+.prizes-list li:hover {
+    transform: translateY(-5px);
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.prizes-list .prize-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.prizes-list .prize-details {
+    flex: 1;
+    text-align: left;
+    margin-right: 15px;
+    font-size: 1.1em;
+    color: var(--primary-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    position: relative;
+}
+
+.prizes-list .prize-details.radio-gratis {
+    color: #FF1493; /* Color vibrante */
+    font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(255, 20, 147, 0.7);
+}
+
+/* Estilos del Contador Regresivo */
+.prizes-list .prize-countdown {
+    background: var(--countdown-bg);
+    color: var(--countdown-color);
+    padding: 5px 10px;
+    border-radius: 12px;
+    border: var(--countdown-border);
+    font-size: 0.9em;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Cambiar el estilo cuando el tiempo está por agotarse */
+.prizes-list .prize-countdown.expiring {
+    background: rgba(255, 69, 0, 0.9); /* Rojo anaranjado */
+    color: #FFFFFF;
+    animation: shake 0.5s infinite;
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.prizes-list .prize-actions button,
+.prizes-list .prize-actions span {
+    font-size: 1em;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.prizes-list .prize-actions button {
+    background-color: var(--button-success);
+    color: white;
+}
+
+.prizes-list .prize-actions button:hover {
+    background-color: #1DA653;
+}
+
+.prizes-list .prize-actions span {
+    color: #FFD700;
+    font-weight: bold;
+}
+
+/* ========== BOTÓN DE MUSICA ========= */
+.music-toggle-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--button-primary);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 50%;
+    font-size: 1.5em;
+    cursor: pointer;
+    box-shadow: 0 0 15px var(--secondary-color);
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.music-toggle-btn.paused::after {
+    content: '▶️'; /* Icono de reproducción */
+}
+
+.music-toggle-btn.playing::after {
+    content: '⏸️'; /* Icono de pausa */
+}
+
+.music-toggle-btn:hover {
+    background: var(--secondary-color);
+    box-shadow: 0 0 25px var(--secondary-color);
+    transform: scale(1.1);
+}
+
+/* ========== RESPONSIVE DESIGN ========= */
+@media (max-width: 768px) {
+    /* Ajustes para Tablets y Dispositivos Medianos */
+    .wheel-container {
+        width: 80vw;
+        aspect-ratio: 1 / 1; /* Mantener proporción */
+        max-height: 500px;
+    }
+
+    #wheelCanvas {
+        border-width: 10px; /* Reducir grosor del borde en pantallas medianas */
+    }
+
+    .android-pointer {
+        left: -60px; /* Reducir desplazamiento para que el pointer sea visible */
+        width: 70px; /* Reducir tamaño para pantallas medianas */
+    }
+
+    .spin-btn, .share-btn {
+        width: 180px;
+        padding: 12px 25px;
+        font-size: 1.2em;
+    }
+
+    .animated-text {
+        font-size: 2em;
+    }
+
+    .prizes-title {
+        font-size: 1.8em;
+    }
+
+    .prizes-list .prize-details {
+        font-size: 1em;
+    }
+
+    .popup-content {
+        padding: 20px 25px;
+    }
+
+    .popup-content h2 {
+        font-size: 1.8em;
+    }
+
+    .popup-content p {
+        font-size: 1.2em;
+    }
+
+    .prizes-section {
+        padding: 20px; 
+    }
+
+    /* Mantener el fondo cubriendo toda la pantalla */
+    body {
+        background-size: cover; /* Cambiar de contain a cover */
+    }
+}
+
+@media (max-width: 480px) {
+    /* Ajustes para Móviles */
+    .wheel-container {
+        width: 90vw;
+        aspect-ratio: 1 / 1; /* Mantener proporción */
+        max-height: 450px;
+    }
+
+    #wheelCanvas {
+        border-width: 8px; /* Reducir grosor del borde en móviles */
+    }
+
+    .android-pointer {
+        left: -50px; /* Reducir aún más el desplazamiento */
+        width: 60px; /* Reducir tamaño para pantallas pequeñas */
+    }
+
+    .spin-btn, .share-btn {
+        width: 160px;
+        padding: 10px 20px;
+        font-size: 1.1em;
+    }
+
+    .animated-text {
+        font-size: 1.5em;
+    }
+
+    .prizes-title {
+        font-size: 1.6em;
+    }
+
+    .prizes-list .prize-details {
+        font-size: 0.9em;
+    }
+
+    .popup-content {
+        padding: 15px 20px;
+    }
+
+    .popup-content h2 {
+        font-size: 1.6em;
+    }
+
+    .popup-content p {
+        font-size: 1em;
+    }
+
+    .prizes-section {
+        padding: 15px; 
+    }
+
+    /* Mantener el fondo cubriendo toda la pantalla */
+    body {
+        background-size: cover; /* Cambiar de contain a cover */
+    }
+}
+
+/* ========== SNOWFALL ========= */
+#snowContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.snowflake {
+    position: absolute;
+    top: -10%;
+    color: white;
+    font-size: 1.5em;
+    user-select: none;
+    opacity: 0.8;
+    animation: snow 10s linear infinite;
+}
+
+@keyframes snow {
+    to {
+        transform: translateX(200px) rotate(360deg);
+        top: 100%;
+    }
+}
+
+/* Snowflakes con diferentes posiciones y delays */
+.snowflake:nth-child(odd) {
+    left: calc(10% + 10px);
+    animation-duration: 12s;
+    font-size: 1.2em;
+}
+
+.snowflake:nth-child(even) {
+    left: calc(20% + 10px);
+    animation-duration: 10s;
+    font-size: 1.5em;
+}
+
+/* ========== BOTONES DE ACCIÓN ========= */
+.buttons-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.spin-btn, .share-btn {
+    width: 220px;
+    padding: 15px 30px;
+    margin: 10px;
+    font-size: 1.4em;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 0 25px var(--secondary-color);
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    font-family: var(--casino-font);
+    z-index: 2;
+}
+
+.spin-btn {
+    background: linear-gradient(45deg, var(--button-primary), var(--secondary-color));
+    color: white;
+}
+
+.spin-btn:hover {
+    background: linear-gradient(45deg, var(--secondary-color), #FF6347);
+    box-shadow: 0 0 35px #FF6347;
+    transform: scale(1.05);
+}
+
+.spin-btn:disabled {
+    background: #555;
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.share-btn {
+    background: var(--button-secondary);
+    color: white;
+}
+
+.share-btn:hover {
+    background: #365899;
+    box-shadow: 0 0 30px #365899;
+    transform: scale(1.05);
+}
+
+/* ========== POPUP DE PREMIO ========= */
+.popup h2 {
+    margin: 0;
+    font-size: 2.2em;
+    color: var(--primary-color);
+    font-family: var(--casino-font);
+    text-shadow: 2px 2px 10px rgba(255, 215, 0, 0.6);
+}
+
+.popup p {
+    margin: 20px 0;
+    font-size: 1.4em;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+}
+
+.popup .prize-actions {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.popup .prize-actions button,
+.popup .prize-actions a {
+    background: var(--button-success);
+    color: white;
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.3s ease;
+    margin: 10px 0;
+    border: none;
+    cursor: pointer;
+}
+
+.popup .prize-actions a {
+    background: var(--button-secondary);
+}
+
+.popup .prize-actions button:hover,
+.popup .prize-actions a:hover {
+    background: #1DA653;
+    transform: scale(1.05);
+}
+
+/* ========== LISTA DE PREMIOS ========= */
+.prizes-section {
+    margin-top: 40px;
+    padding: 25px;
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 20px var(--primary-color);
+}
+
+.prizes-title {
+    font-family: var(--casino-font);
+    text-shadow: 2px 2px 8px black;
+    font-size: 2em;
+    color: var(--primary-color);
+    margin-bottom: 25px;
+}
+
+.prizes-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.prizes-list li {
+    background-color: rgba(0, 0, 0, 0.5);
+    margin: 15px auto;
+    padding: 15px;
+    width: 90%;
+    max-width: 550px;
+    border: 2px solid var(--primary-color);
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s, background-color 0.3s;
+}
+
+.prizes-list li:hover {
+    transform: translateY(-5px);
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.prizes-list .prize-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.prizes-list .prize-details {
+    flex: 1;
+    text-align: left;
+    margin-right: 15px;
+    font-size: 1.1em;
+    color: var(--primary-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    position: relative;
+}
+
+.prizes-list .prize-details.radio-gratis {
+    color: #FF1493; /* Color vibrante */
+    font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(255, 20, 147, 0.7);
+}
+
+/* Estilos del Contador Regresivo */
+.prizes-list .prize-countdown {
+    background: var(--countdown-bg);
+    color: var(--countdown-color);
+    padding: 5px 10px;
+    border-radius: 12px;
+    border: var(--countdown-border);
+    font-size: 0.9em;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Cambiar el estilo cuando el tiempo está por agotarse */
+.prizes-list .prize-countdown.expiring {
+    background: rgba(255, 69, 0, 0.9); /* Rojo anaranjado */
+    color: #FFFFFF;
+    animation: shake 0.5s infinite;
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.prizes-list .prize-actions button,
+.prizes-list .prize-actions span {
+    font-size: 1em;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.prizes-list .prize-actions button {
+    background-color: var(--button-success);
+    color: white;
+}
+
+.prizes-list .prize-actions button:hover {
+    background-color: #1DA653;
+}
+
+.prizes-list .prize-actions span {
+    color: #FFD700;
+    font-weight: bold;
+}
+
+/* ========== BOTÓN DE MUSICA ========= */
+.music-toggle-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--button-primary);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 50%;
+    font-size: 1.5em;
+    cursor: pointer;
+    box-shadow: 0 0 15px var(--secondary-color);
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Iconos de reproducción y pausa usando pseudo-elementos */
+.music-toggle-btn.paused::after {
+    content: '▶️'; /* Icono de reproducción */
+}
+
+.music-toggle-btn.playing::after {
+    content: '⏸️'; /* Icono de pausa */
+}
+
+.music-toggle-btn:hover {
+    background: var(--secondary-color);
+    box-shadow: 0 0 25px var(--secondary-color);
+    transform: scale(1.1);
+}
+
+/* ========== RESPONSIVE DESIGN ========= */
+@media (max-width: 768px) {
+    /* Ajustes para Tablets y Dispositivos Medianos */
+    .wheel-container {
+        width: 80vw;
+        aspect-ratio: 1 / 1; /* Mantener proporción */
+        max-height: 500px;
+    }
+
+    #wheelCanvas {
+        border-width: 10px; /* Reducir grosor del borde en pantallas medianas */
+    }
+
+    .android-pointer {
+        left: -60px; /* Reducir desplazamiento para que el pointer sea visible */
+        width: 70px; /* Reducir tamaño para pantallas medianas */
+    }
+
+    .spin-btn, .share-btn {
+        width: 180px;
+        padding: 12px 25px;
+        font-size: 1.2em;
+    }
+
+    .animated-text {
+        font-size: 2em;
+    }
+
+    .prizes-title {
+        font-size: 1.8em;
+    }
+
+    .prizes-list .prize-details {
+        font-size: 1em;
+    }
+
+    .popup-content {
+        padding: 20px 25px;
+    }
+
+    .popup-content h2 {
+        font-size: 1.8em;
+    }
+
+    .popup-content p {
+        font-size: 1.2em;
+    }
+
+    .prizes-section {
+        padding: 20px; 
+    }
+
+    /* Mantener el fondo cubriendo toda la pantalla */
+    body {
+        background-size: cover; /* Cambiar de contain a cover */
+    }
+}
+
+@media (max-width: 480px) {
+    /* Ajustes para Móviles */
+    .wheel-container {
+        width: 90vw;
+        aspect-ratio: 1 / 1; /* Mantener proporción */
+        max-height: 450px;
+    }
+
+    #wheelCanvas {
+        border-width: 8px; /* Reducir grosor del borde en móviles */
+    }
+
+    .android-pointer {
+        left: -50px; /* Reducir aún más el desplazamiento */
+        width: 60px; /* Reducir tamaño para pantallas pequeñas */
+    }
+
+    .spin-btn, .share-btn {
+        width: 160px;
+        padding: 10px 20px;
+        font-size: 1.1em;
+    }
+
+    .animated-text {
+        font-size: 1.5em;
+    }
+
+    .prizes-title {
+        font-size: 1.6em;
+    }
+
+    .prizes-list .prize-details {
+        font-size: 0.9em;
+    }
+
+    .popup-content {
+        padding: 15px 20px;
+    }
+
+    .popup-content h2 {
+        font-size: 1.6em;
+    }
+
+    .popup-content p {
+        font-size: 1em;
+    }
+
+    .prizes-section {
+        padding: 15px; 
+    }
+
+    /* Mantener el fondo cubriendo toda la pantalla */
+    body {
+        background-size: cover; /* Cambiar de contain a cover */
+    }
+}
+
+/* ========== SNOWFALL ========= */
+#snowContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.snowflake {
+    position: absolute;
+    top: -10%;
+    color: white;
+    font-size: 1.5em;
+    user-select: none;
+    opacity: 0.8;
+    animation: snow 10s linear infinite;
+}
+
+@keyframes snow {
+    to {
+        transform: translateX(200px) rotate(360deg);
+        top: 100%;
+    }
+}
+
+/* Snowflakes con diferentes posiciones y delays */
+.snowflake:nth-child(odd) {
+    left: calc(10% + 10px);
+    animation-duration: 12s;
+    font-size: 1.2em;
+}
+
+.snowflake:nth-child(even) {
+    left: calc(20% + 10px);
+    animation-duration: 10s;
+    font-size: 1.5em;
+}
+
+/* ========== BOTONES DE ACCIÓN ========= */
+.buttons-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.spin-btn, .share-btn {
+    width: 220px;
+    padding: 15px 30px;
+    margin: 10px;
+    font-size: 1.4em;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 0 25px var(--secondary-color);
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    font-family: var(--casino-font);
+    z-index: 2;
+}
+
+.spin-btn {
+    background: linear-gradient(45deg, var(--button-primary), var(--secondary-color));
+    color: white;
+}
+
+.spin-btn:hover {
+    background: linear-gradient(45deg, var(--secondary-color), #FF6347);
+    box-shadow: 0 0 35px #FF6347;
+    transform: scale(1.05);
+}
+
+.spin-btn:disabled {
+    background: #555;
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.share-btn {
+    background: var(--button-secondary);
+    color: white;
+}
+
+.share-btn:hover {
+    background: #365899;
+    box-shadow: 0 0 30px #365899;
+    transform: scale(1.05);
+}
+
+/* ========== POPUP DE PREMIO ========= */
+.popup h2 {
+    margin: 0;
+    font-size: 2.2em;
+    color: var(--primary-color);
+    font-family: var(--casino-font);
+    text-shadow: 2px 2px 10px rgba(255, 215, 0, 0.6);
+}
+
+.popup p {
+    margin: 20px 0;
+    font-size: 1.4em;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+}
+
+.popup .prize-actions {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.popup .prize-actions button,
+.popup .prize-actions a {
+    background: var(--button-success);
+    color: white;
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.3s ease;
+    margin: 10px 0;
+    border: none;
+    cursor: pointer;
+}
+
+.popup .prize-actions a {
+    background: var(--button-secondary);
+}
+
+.popup .prize-actions button:hover,
+.popup .prize-actions a:hover {
+    background: #1DA653;
+    transform: scale(1.05);
+}
+
+/* ========== LISTA DE PREMIOS ========= */
+.prizes-section {
+    margin-top: 40px;
+    padding: 25px;
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 20px var(--primary-color);
+}
+
+.prizes-title {
+    font-family: var(--casino-font);
+    text-shadow: 2px 2px 8px black;
+    font-size: 2em;
+    color: var(--primary-color);
+    margin-bottom: 25px;
+}
+
+.prizes-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.prizes-list li {
+    background-color: rgba(0, 0, 0, 0.5);
+    margin: 15px auto;
+    padding: 15px;
+    width: 90%;
+    max-width: 550px;
+    border: 2px solid var(--primary-color);
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s, background-color 0.3s;
+}
+
+.prizes-list li:hover {
+    transform: translateY(-5px);
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.prizes-list .prize-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.prizes-list .prize-details {
+    flex: 1;
+    text-align: left;
+    margin-right: 15px;
+    font-size: 1.1em;
+    color: var(--primary-color);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    position: relative;
+}
+
+.prizes-list .prize-details.radio-gratis {
+    color: #FF1493; /* Color vibrante */
+    font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(255, 20, 147, 0.7);
+}
+
+/* Estilos del Contador Regresivo */
+.prizes-list .prize-countdown {
+    background: var(--countdown-bg);
+    color: var(--countdown-color);
+    padding: 5px 10px;
+    border-radius: 12px;
+    border: var(--countdown-border);
+    font-size: 0.9em;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Cambiar el estilo cuando el tiempo está por agotarse */
+.prizes-list .prize-countdown.expiring {
+    background: rgba(255, 69, 0, 0.9); /* Rojo anaranjado */
+    color: #FFFFFF;
+    animation: shake 0.5s infinite;
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.prizes-list .prize-actions button,
+.prizes-list .prize-actions span {
+    font-size: 1em;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.prizes-list .prize-actions button {
+    background-color: var(--button-success);
+    color: white;
+}
+
+.prizes-list .prize-actions button:hover {
+    background-color: #1DA653;
+}
+
+.prizes-list .prize-actions span {
+    color: #FFD700;
+    font-weight: bold;
+}
+
+/* ========== BOTÓN DE MUSICA ========= */
+/* Estilos ya incluidos anteriormente */
+
+/* ========== RESPONSIVE DESIGN ========= */
+@media (max-width: 768px) {
+    /* Ajustes para Tablets y Dispositivos Medianos */
+    .wheel-container {
+        width: 80vw;
+        aspect-ratio: 1 / 1; /* Mantener proporción */
+        max-height: 500px;
+    }
+
+    #wheelCanvas {
+        border-width: 10px; /* Reducir grosor del borde en pantallas medianas */
+    }
+
+    .android-pointer {
+        left: -60px; /* Reducir desplazamiento para que el pointer sea visible */
+        width: 70px; /* Reducir tamaño para pantallas medianas */
+    }
+
+    .spin-btn, .share-btn {
+        width: 180px;
+        padding: 12px 25px;
+        font-size: 1.2em;
+    }
+
+    .animated-text {
+        font-size: 2em;
+    }
+
+    .prizes-title {
+        font-size: 1.8em;
+    }
+
+    .prizes-list .prize-details {
+        font-size: 1em;
+    }
+
+    .popup-content {
+        padding: 20px 25px;
+    }
+
+    .popup-content h2 {
+        font-size: 1.8em;
+    }
+
+    .popup-content p {
+        font-size: 1.2em;
+    }
+
+    .prizes-section {
+        padding: 20px; 
+    }
+
+    /* Mantener el fondo cubriendo toda la pantalla */
+    body {
+        background-size: cover; /* Cambiar de contain a cover */
+    }
+}
+
+@media (max-width: 480px) {
+    /* Ajustes para Móviles */
+    .wheel-container {
+        width: 90vw;
+        aspect-ratio: 1 / 1; /* Mantener proporción */
+        max-height: 450px;
+    }
+
+    #wheelCanvas {
+        border-width: 8px; /* Reducir grosor del borde en móviles */
+    }
+
+    .android-pointer {
+        left: -50px; /* Reducir aún más el desplazamiento */
+        width: 60px; /* Reducir tamaño para pantallas pequeñas */
+    }
+
+    .spin-btn, .share-btn {
+        width: 160px;
+        padding: 10px 20px;
+        font-size: 1.1em;
+    }
+
+    .animated-text {
+        font-size: 1.5em;
+    }
+
+    .prizes-title {
+        font-size: 1.6em;
+    }
+
+    .prizes-list .prize-details {
+        font-size: 0.9em;
+    }
+
+    .popup-content {
+        padding: 15px 20px;
+    }
+
+    .popup-content h2 {
+        font-size: 1.6em;
+    }
+
+    .popup-content p {
+        font-size: 1em;
+    }
+
+    .prizes-section {
+        padding: 15px; 
+    }
+
+    /* Mantener el fondo cubriendo toda la pantalla */
+    body {
+        background-size: cover; /* Cambiar de contain a cover */
+    }
+}
+
+/* ========== SNOWFALL ========= */
+/* Estilos ya incluidos anteriormente */
+
+/* ========== BOTONES DE ACCIÓN ========= */
+/* Estilos ya incluidos anteriormente */
+
+/* ========== BOTÓN DE MUSICA ========= */
+/* Estilos ya incluidos anteriormente */
+
+/* ========== PREVENIR ZOOM AUTOMÁTICO EN INPUTS ========= */
+/* Asegurarse de que el tamaño de fuente sea >=16px para evitar el zoom en móviles */
+.modal-content input {
+    font-size: 16px; /* Ya establecido anteriormente */
+    /* Resto de estilos */
+}
+
+/* ========== GENERALIDADES ========= */
+button, a {
+    outline: none;
+}
+
+/* Evitar que los enlaces resalten al enfocarse */
+a:focus, button:focus {
+    outline: none;
+}
+
+/* ========== ESTILOS ADICIONALES PARA MEJORAR UX ========= */
+/* Evitar el scroll de fondo cuando un modal está abierto */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* ========== TRANSICIONES SUAVES ========= */
+.modal, .popup {
+    transition: opacity 0.3s ease;
+}
+
+.modal.show, .popup.show {
+    display: flex;
+    opacity: 1;
+}
+
+.modal.hide, .popup.hide {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Estilos para el botón moderno en el formulario */
+.modern-button {
+    background: linear-gradient(45deg, var(--button-primary), var(--secondary-color));
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 1.2em;
+    cursor: pointer;
+    box-shadow: 0 0 20px var(--secondary-color);
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+    font-family: var(--casino-font);
+}
+
+.modern-button:hover {
+    background: linear-gradient(45deg, var(--secondary-color), #FF6347);
+    box-shadow: 0 0 30px #FF6347;
+    transform: scale(1.05);
+}
+
+/* ========== ESTILOS DEL FOOTER ========= */
+footer {
+    margin-top: 40px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--primary-color);
+    font-size: 1em;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+}
+
+footer a {
+    color: var(--button-secondary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: #365899;
 }

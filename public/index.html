@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Viewport optimizado para dispositivos móviles -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>LLEVATE UNA RADIO 100% GRATIS CON LA RULETA CARDROID</title>
     <!-- CSS Correctamente Referenciado -->
     <link rel="stylesheet" href="assets/css/style.css"/>
 
-    <!-- Meta Tags Open Graph -->
+    <!-- Meta Tags Open Graph para Compartir en Redes Sociales -->
     <meta property="og:title" content="¡Gira la Ruleta Cardroid y Llévate una Radio Android Gratis!" />
     <meta property="og:description" content="Participa en nuestra emocionante ruleta y gana increíbles premios, regalos y descuentos exclusivos. ¡No te lo pierdas!" />
     <meta property="og:image" content="https://ruleta.cardroid.pe/assets/images/preview.jpg" />
-    <meta property="og:url" content="https://ruleta.cardroid.pe/	" />
+    <meta property="og:url" content="https://ruleta.cardroid.pe/" />
     <meta property="og:type" content="website" />
 
     <!-- Twitter Card (Opcional) -->
@@ -21,11 +22,11 @@
     <meta name="twitter:description" content="Participa en nuestra emocionante ruleta y gana increíbles premios, regalos y descuentos exclusivos. ¡No te lo pierdas!" />
     <meta name="twitter:image" content="https://cardroid.ruleta.com/assets/images/preview.jpg" />
 
-    <!-- Librerías necesarias -->
-    <!-- GSAP 3.x -->
+    <!-- Librerías necesarias (Cargadas con defer para mejorar el rendimiento) -->
+    <!-- GSAP 3.x para animaciones -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
     
-    <!-- Confetti (Cargado con defer) -->
+    <!-- Confetti para efectos visuales -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
     
     <!-- Winwheel.js Cargado Localmente Antes de script.js -->
@@ -48,6 +49,8 @@
     <!-- Modal de Registro -->
     <div id="loginModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modalTitle">
         <div class="modal-content">
+            <!-- Botón de Cierre Mejorado -->
+            <button id="closeLoginModal" class="close-popup-btn" aria-label="Cerrar Registro">&times;</button>
             <h2 id="modalTitle">Registra tus Datos</h2>
             <form id="registrationForm">
                 <div class="form-group">
@@ -98,6 +101,8 @@
             <p>Has ganado: <span id="prizeText"></span></p>
             <div class="prize-actions">
                 <!-- El contenido de prize-actions se actualizará dinámicamente en script.js -->
+                <button id="claimPrizeButton">Canjear Premio</button>
+                <a href="#" id="sharePrizeLink">Compartir en Facebook</a>
             </div>
         </div>
     </div>
@@ -105,19 +110,34 @@
     <!-- Modal de Términos y Condiciones -->
     <div id="termsModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="termsTitle">
         <div class="modal-content">
+            <!-- Botón de Cierre Mejorado -->
+            <button id="closeTermsModal" class="close-popup-btn" aria-label="Cerrar Términos y Condiciones">&times;</button>
             <h2 id="termsTitle">Términos y Condiciones</h2>
             <p>
-                1. Los premios obtenidos mediante la Ruleta de Descuentos CARDROID no son acumulativos.<br/>
-                2. Solo se puede canjear un premio a la vez por la compra de un producto específico, que es válido para la compra de una radio Android por un valor de 560 soles.<br/>
-                3. Los descuentos se calcularán sobre el precio mencionado anteriormente.<br/>
-                4. Se anulará cualquier intento de trampa o manipulación de la ruleta.<br/>
-                5. Los premios son válidos únicamente para la placa registrada durante el proceso de registro.<br/>
-                6. Los premios no pueden ser transferidos, vendidos ni cedidos a terceros bajo ninguna circunstancia.<br/>
-                7. Cualquier intento de fraude o violación de estos términos resultará en la descalificación inmediata.<br/>
-                8. Los datos registrados se podrán utilizar para publicidad y promociones de la tienda en el futuro.<br/>
-                9. Los participantes aceptan estos términos y condiciones al registrarse y participar en la Ruleta de Descuentos CARDROID.
+                1. Los premios obtenidos mediante la Ruleta de Descuentos CARDROID no son acumulativos. Solo se puede canjear un premio a la vez por la compra de un producto específico.<br/><br/>
+
+                2. Los premios son válidos únicamente para la placa registrada durante el proceso de registro y están destinados a la adquisición de una radio Android por un valor de <strong>560 soles</strong>.<br/><br/>
+
+                3. <strong>Descuento por Consola Gratuita:</strong><br/>
+                a. <em>Modelos Comerciales Elegibles:</em> La consola gratuita es válida únicamente para modelos comerciales de las marcas Toyota, Kia y Hyundai. Este premio cubre el valor de la consola hasta un máximo de <strong>100 soles</strong>.<br/>
+                b. <em>Modelos No Elegibles o con Costo Elevado:</em> En el caso de vehículos que no cuenten con una consola compatible o cuya consola tenga un costo superior a 100 soles, se otorgará un descuento de <strong>50 soles</strong> en la compra de la radio Android.<br/><br/>
+
+                4. Los descuentos se calcularán sobre el precio mencionado anteriormente (**560 soles**) y se aplicarán únicamente al momento de la compra del producto específico.<br/><br/>
+
+                5. Cualquier intento de trampa, manipulación de la ruleta o violación de estos términos resultará en la **descalificación inmediata** del participante y la pérdida de cualquier premio obtenido.<br/><br/>
+
+                6. Los premios no pueden ser **transferidos, vendidos ni cedidos a terceros** bajo ninguna circunstancia. Cualquier intento de hacerlo invalidará el premio y el derecho a canjearlo.<br/><br/>
+
+                7. Los datos registrados durante el proceso de participación se podrán utilizar para **publicidad y promociones futuras** de la tienda CARDROID. Al participar, los usuarios aceptan el uso de sus datos conforme a esta disposición.<br/><br/>
+
+                8. Solo podrán participar en la **Ruleta de Descuentos CARDROID** personas mayores de **18 años** que sean propietarios de un vehículo comercial de las marcas mencionadas anteriormente y que cumplan con los requisitos de registro.<br/><br/>
+
+                9. Los premios son válidos únicamente en el **territorio nacional** donde opera la tienda CARDROID. No se aplican en compras fuera de la región designada ni en establecimientos no autorizados.<br/><br/>
+
+                10. CARDROID se reserva el derecho de **modificar o actualizar** estos términos y condiciones en cualquier momento, sin previo aviso. Las modificaciones serán efectivas desde el momento de su publicación en el sitio web.<br/><br/>
+
+                11. Al registrarse y participar en la **Ruleta de Descuentos CARDROID**, los participantes aceptan de manera plena y sin reservas estos términos y condiciones, comprometiéndose a cumplir con todas las disposiciones aquí establecidas.
             </p>
-            <button id="closeTermsModal" class="close-popup-btn">Cerrar</button>
         </div>
     </div>
 
@@ -134,7 +154,6 @@
             <section class="wheel-section">
                 <div class="wheel-container">
                     <!-- Pointer Android Mejorado -->
-                     <!-- Pointer Android Mejorado -->
                     <img src="assets/images/android.png" alt="Android señalando" class="android-pointer" />
                     <canvas 
                         id="wheelCanvas" 
