@@ -504,7 +504,7 @@ document.addEventListener("DOMContentLoaded", () => {
             prizePopup.querySelector(".prize-actions").innerHTML = `
                 <p>Comparte en Facebook para obtener giros adicionales.</p>
                 <button id="shareForSpin" class="share-for-spin-btn">Compartir en Facebook (+3 giros)</button>
-                <button id="closePrizePopup" class="close-popup-btn">Cerrar y seguir participando</button>
+                <button id="closePrizePopup" class="close-prize-popup-btn">Cerrar y seguir jugando</button>
             `;
 
             const shareForSpinButton = document.getElementById("shareForSpin");
@@ -522,14 +522,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (closePrizePopupBtn) {
                 closePrizePopupBtn.addEventListener("click", hidePrizePopup);
-                console.log("[showPrizePopup] Botón 'Cerrar y seguir participando' agregado.");
+                console.log("[showPrizePopup] Botón 'Cerrar y seguir jugando' agregado.");
             } else {
-                console.error("[showPrizePopup] Botón 'Cerrar y seguir participando' no encontrado.");
+                console.error("[showPrizePopup] Botón 'Cerrar y seguir jugando' no encontrado.");
             }
         } else {
             prizePopup.querySelector(".prize-actions").innerHTML = `
                 <button id="claimPrizeButton" class="claim-prize-btn">Canjear</button>
-                <button id="closePrizePopup" class="close-popup-btn">Cerrar y seguir participando</button>
+                <button id="closePrizePopup" class="close-prize-popup-btn">Cerrar y seguir jugando</button>
             `;
             const claimPrizeBtn = document.getElementById("claimPrizeButton");
             const closePrizePopupBtn = document.getElementById("closePrizePopup");
@@ -546,9 +546,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (closePrizePopupBtn) {
                 closePrizePopupBtn.addEventListener("click", hidePrizePopup);
-                console.log("[showPrizePopup] Botón 'Cerrar y seguir participando' agregado.");
+                console.log("[showPrizePopup] Botón 'Cerrar y seguir jugando' agregado.");
             } else {
-                console.error("[showPrizePopup] Botón 'Cerrar y seguir participando' no encontrado.");
+                console.error("[showPrizePopup] Botón 'Cerrar y seguir jugando' no encontrado.");
             }
         }
 
@@ -792,7 +792,7 @@ document.addEventListener("DOMContentLoaded", () => {
             prizePopup.querySelector(".prize-actions").innerHTML = `
                 <p>Comparte en Facebook para obtener giros adicionales.</p>
                 <button id="shareForSpin" class="share-for-spin-btn">Compartir en Facebook (+3 giros)</button>
-                <button id="closePrizePopup" class="close-popup-btn">Cerrar y seguir participando</button>
+                <button id="closePrizePopup" class="close-prize-popup-btn">Cerrar y seguir jugando</button>
             `;
 
             const shareForSpinButton = document.getElementById("shareForSpin");
@@ -810,14 +810,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (closePrizePopupBtn) {
                 closePrizePopupBtn.addEventListener("click", hidePrizePopup);
-                console.log("[showPrizePopup] Botón 'Cerrar y seguir participando' agregado.");
+                console.log("[showPrizePopup] Botón 'Cerrar y seguir jugando' agregado.");
             } else {
-                console.error("[showPrizePopup] Botón 'Cerrar y seguir participando' no encontrado.");
+                console.error("[showPrizePopup] Botón 'Cerrar y seguir jugando' no encontrado.");
             }
         } else {
             prizePopup.querySelector(".prize-actions").innerHTML = `
                 <button id="claimPrizeButton" class="claim-prize-btn">Canjear</button>
-                <button id="closePrizePopup" class="close-popup-btn">Cerrar y seguir participando</button>
+                <button id="closePrizePopup" class="close-prize-popup-btn">Cerrar y seguir jugando</button>
             `;
             const claimPrizeBtn = document.getElementById("claimPrizeButton");
             const closePrizePopupBtn = document.getElementById("closePrizePopup");
@@ -834,9 +834,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (closePrizePopupBtn) {
                 closePrizePopupBtn.addEventListener("click", hidePrizePopup);
-                console.log("[showPrizePopup] Botón 'Cerrar y seguir participando' agregado.");
+                console.log("[showPrizePopup] Botón 'Cerrar y seguir jugando' agregado.");
             } else {
-                console.error("[showPrizePopup] Botón 'Cerrar y seguir participando' no encontrado.");
+                console.error("[showPrizePopup] Botón 'Cerrar y seguir jugando' no encontrado.");
             }
         }
 
@@ -1132,6 +1132,250 @@ document.addEventListener("DOMContentLoaded", () => {
             submitDataButton.disabled = false;
             loadingMessage.style.display = "none";
         }
+    }
+
+    /**
+     * Mostrar el popup de premio con el texto del premio obtenido.
+     * @param {string} prizeText - Texto del premio.
+     */
+    function showPrizePopup(prizeText) {
+        if (!prizePopup || !prizeTextElement) {
+            console.error("Elemento del popup no encontrado.");
+            return;
+        }
+
+        console.log("[showPrizePopup] Mostrando premio:", prizeText);
+
+        prizeTextElement.textContent = prizeText;
+
+        if (
+            prizeText.toLowerCase().includes("sigue intentando") ||
+            prizeText.toLowerCase().includes("giro adicional")
+        ) {
+            prizePopup.querySelector(".prize-actions").innerHTML = `
+                <p>Comparte en Facebook para obtener giros adicionales.</p>
+                <button id="shareForSpin" class="share-for-spin-btn">Compartir en Facebook (+3 giros)</button>
+                <button id="closePrizePopup" class="close-prize-popup-btn">Cerrar y seguir jugando</button>
+            `;
+
+            const shareForSpinButton = document.getElementById("shareForSpin");
+            const closePrizePopupBtn = document.getElementById("closePrizePopup");
+
+            if (shareForSpinButton) {
+                shareForSpinButton.addEventListener("click", () => {
+                    shareOnFacebook();
+                    hidePrizePopup();
+                });
+                console.log("[showPrizePopup] Botón 'Compartir en Facebook' agregado.");
+            } else {
+                console.error("[showPrizePopup] Botón 'Compartir en Facebook' no encontrado.");
+            }
+
+            if (closePrizePopupBtn) {
+                closePrizePopupBtn.addEventListener("click", hidePrizePopup);
+                console.log("[showPrizePopup] Botón 'Cerrar y seguir jugando' agregado.");
+            } else {
+                console.error("[showPrizePopup] Botón 'Cerrar y seguir jugando' no encontrado.");
+            }
+        } else {
+            prizePopup.querySelector(".prize-actions").innerHTML = `
+                <button id="claimPrizeButton" class="claim-prize-btn">Canjear</button>
+                <button id="closePrizePopup" class="close-prize-popup-btn">Cerrar y seguir jugando</button>
+            `;
+            const claimPrizeBtn = document.getElementById("claimPrizeButton");
+            const closePrizePopupBtn = document.getElementById("closePrizePopup");
+
+            if (claimPrizeBtn) {
+                claimPrizeBtn.addEventListener("click", () => {
+                    sendWhatsAppMessage(prizeText);
+                    hidePrizePopup();
+                });
+                console.log("[showPrizePopup] Botón 'Canjear' agregado.");
+            } else {
+                console.error("[showPrizePopup] Botón 'Canjear' no encontrado.");
+            }
+
+            if (closePrizePopupBtn) {
+                closePrizePopupBtn.addEventListener("click", hidePrizePopup);
+                console.log("[showPrizePopup] Botón 'Cerrar y seguir jugando' agregado.");
+            } else {
+                console.error("[showPrizePopup] Botón 'Cerrar y seguir jugando' no encontrado.");
+            }
+        }
+
+        prizePopup.style.display = "flex"; // Asegurar display flex para centrar
+        prizePopup.setAttribute("aria-hidden", "false");
+        console.log("[showPrizePopup] Popup de premio mostrado.");
+
+        // Rastrear el evento de canje con Facebook Pixel
+        if (!prizeText.toLowerCase().includes("sigue intentando") &&
+            !prizeText.toLowerCase().includes("giro adicional") &&
+            typeof fbq === 'function') {
+            fbq('track', 'ClaimPrize', {
+                prize: prizeText
+            });
+            console.log("[showPrizePopup] Evento 'ClaimPrize' rastreado con Facebook Pixel.");
+        }
+    }
+
+    /**
+     * Ocultar el popup de premio.
+     */
+    function hidePrizePopup() {
+        if (!prizePopup) return;
+        prizePopup.style.display = "none";
+        prizePopup.setAttribute("aria-hidden", "true");
+        console.log("[hidePrizePopup] Popup de premio ocultado.");
+    }
+
+    /**
+     * Enviar un mensaje a WhatsApp para canjear el premio.
+     * @param {string} prizeText - Texto del premio.
+     */
+    function sendWhatsAppMessage(prizeText) {
+        const plate = userState.plate || "XXXXXX";
+        const message = encodeURIComponent(
+            `SOY EL DUEÑO DEL VEHICULO ${plate} Y DESEO CANJEAR EL PREMIO ${prizeText}`
+        );
+        const whatsappURL = `https://wa.me/51932426069?text=${message}`;
+        window.open(whatsappURL, "_blank");
+        console.log("[sendWhatsAppMessage] Mensaje enviado a WhatsApp:", message);
+
+        // Rastrear el evento de canje con Facebook Pixel
+        if (typeof fbq === 'function') {
+            fbq('track', 'ClaimPrize', {
+                prize: prizeText
+            });
+            console.log("[sendWhatsAppMessage] Evento 'ClaimPrize' rastreado con Facebook Pixel.");
+        }
+    }
+
+    /**
+     * Actualizar la lista de premios con contadores regresivos.
+     */
+    function updatePrizesList() {
+        if (!prizesList) {
+            console.error("Elemento 'prizesList' no encontrado.");
+            return;
+        }
+        prizesList.innerHTML = ""; // Asegura que la lista esté limpia antes de actualizar
+
+        if (userState.prizes.length === 0) {
+            prizesList.innerHTML = "<p>No tienes premios.</p>";
+            console.log("[updatePrizesList] No hay premios para mostrar.");
+            return;
+        }
+
+        // Eliminar duplicados basados en el texto del premio
+        const uniquePrizes = [];
+        const prizeTexts = new Set();
+        userState.prizes.forEach(prize => {
+            const normalizedText = prize.text.trim().toLowerCase();
+            if (!prizeTexts.has(normalizedText)) {
+                uniquePrizes.push(prize);
+                prizeTexts.add(normalizedText);
+            } else {
+                console.warn(`[updatePrizesList] Premio duplicado encontrado y omitido: ${prize.text}`);
+            }
+        });
+
+        const ul = document.createElement("ul");
+        uniquePrizes.forEach(prize => {
+            console.log("[updatePrizesList] Agregando premio:", prize.text);
+            const li = document.createElement("li");
+            li.classList.add("prize-item");
+
+            const prizeDetails = document.createElement("div");
+            prizeDetails.classList.add("prize-details");
+            prizeDetails.textContent = `${prize.text} - Expira el ${new Date(prize.expiry).toLocaleDateString()}`;
+
+            // Añadir clase específica si el premio es "RADIO 100% GRATIS"
+            if (prize.text === "RADIO 100% GRATIS") {
+                prizeDetails.classList.add("radio-gratis");
+            }
+
+            const countdown = document.createElement("div");
+            countdown.classList.add("prize-countdown");
+            countdown.id = `countdown-${prize._id}`; // Asegúrate de que cada premio tenga un ID único
+
+            // Iniciar el contador
+            initializeCountdown(prize.expiry, countdown);
+
+            const prizeActions = document.createElement("div");
+            prizeActions.classList.add("prize-actions");
+
+            if (!prize.claimed && new Date(prize.expiry) > new Date()) {
+                if (
+                    !prize.text.toLowerCase().includes("sigue intentando") &&
+                    !prize.text.toLowerCase().includes("giro adicional")
+                ) {
+                    const redeemButton = document.createElement("button");
+                    redeemButton.textContent = "Canjear";
+                    redeemButton.classList.add("redeem-btn");
+                    redeemButton.addEventListener("click", () => {
+                        sendWhatsAppMessage(prize.text);
+                        hidePrizePopup();
+                    });
+                    prizeActions.appendChild(redeemButton);
+                    console.log("[updatePrizesList] Botón 'Canjear' agregado para el premio:", prize.text);
+                }
+            } else {
+                const redeemedText = document.createElement("span");
+                redeemedText.textContent = "Canjeado";
+                redeemedText.style.color = "#FFD700";
+                prizeActions.appendChild(redeemedText);
+                console.log("[updatePrizesList] Premio canjeado:", prize.text);
+            }
+
+            li.appendChild(prizeDetails);
+            li.appendChild(countdown); // Añadir el contador al premio
+            li.appendChild(prizeActions);
+            ul.appendChild(li);
+        });
+        prizesList.appendChild(ul);
+        console.log("[updatePrizesList] Lista de premios actualizada.");
+
+        // Rastrear el evento de visualización de premios con Facebook Pixel
+        if (typeof fbq === 'function') {
+            fbq('track', 'ViewPrizes', {
+                numberOfPrizes: userState.prizes.length
+            });
+            console.log("[updatePrizesList] Evento 'ViewPrizes' rastreado con Facebook Pixel.");
+        }
+    }
+
+    /**
+     * Inicializar un contador regresivo para cada premio.
+     * @param {string} expiryDate - Fecha de expiración del premio.
+     * @param {HTMLElement} element - Elemento HTML donde se mostrará el contador.
+     */
+    function initializeCountdown(expiryDate, element) {
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const expiry = new Date(expiryDate).getTime();
+            const distance = expiry - now;
+
+            if (distance < 0) {
+                element.innerHTML = "Expirado";
+                clearInterval(interval);
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            element.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+            // Añadir clase 'expiring' si queda menos de un día
+            if (distance < (1000 * 60 * 60 * 24)) {
+                element.classList.add("expiring");
+            }
+        }
+
+        updateCountdown(); // Actualizar inmediatamente
+        const interval = setInterval(updateCountdown, 1000); // Actualizar cada segundo
     }
 
     // ========== EVENT LISTENERS ==========
