@@ -51,7 +51,7 @@
         <div class="modal-content">
             <!-- Botón de Cierre Mejorado -->
             <button id="closeLoginModal" class="close-popup-btn" aria-label="Cerrar Registro">&times;</button>
-            <h2 id="modalTitle">Registra tus Datos</h2>
+            <h2 id="modalTitle">Registra tus Datos para Participar por una Radio Android</h2>
             <form id="registrationForm">
                 <div class="form-group">
                     <label for="plate">Placa del Vehículo:</label>
@@ -89,7 +89,14 @@
                         required
                     />
                 </div>
-                <button type="button" id="submitData" class="modern-button">Acceder</button>
+                <button type="button" id="submitData" class="modern-button">
+                    <span class="button-text">Acceder</span>
+                    <span class="spinner" id="submitSpinner"></span>
+                </button>
+                <!-- Mensaje de Carga (Opcional) -->
+                <div id="loadingMessage" class="loading-message" style="display: none;">
+                    Procesando tus datos, por favor espera...
+                </div>
             </form>
         </div>
     </div>
@@ -114,6 +121,7 @@
             <button id="closeTermsModal" class="close-popup-btn" aria-label="Cerrar Términos y Condiciones">&times;</button>
             <h2 id="termsTitle">Términos y Condiciones</h2>
             <p>
+                <!-- Contenido de términos y condiciones -->
                 1. Los premios obtenidos mediante la Ruleta de Descuentos CARDROID no son acumulativos. Solo se puede canjear un premio a la vez por la compra de un producto específico.<br/><br/>
 
                 2. Los premios son válidos únicamente para la placa registrada durante el proceso de registro y están destinados a la adquisición de una radio Android por un valor de <strong>560 soles</strong>.<br/><br/>
