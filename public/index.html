@@ -22,6 +22,24 @@
     <meta name="twitter:description" content="Participa en nuestra emocionante ruleta y gana increíbles premios, regalos y descuentos exclusivos. ¡No te lo pierdas!" />
     <meta name="twitter:image" content="https://cardroid.ruleta.com/assets/images/preview.jpg" />
 
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '594825155784000');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=594825155784000&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+
     <!-- Librerías necesarias (Cargadas con defer para mejorar el rendimiento) -->
     <!-- GSAP 3.x para animaciones -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
@@ -50,7 +68,7 @@
     <div id="loginModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modalTitle">
         <div class="modal-content">
             <!-- Botón de Cierre Mejorado -->
-            <button id="closeLoginModal" class="close-popup-btn" aria-label="Cerrar Registro">&times;</button>
+            <button id="closeLoginModal" class="close-popup-btn" aria-label="Cerrar Registro">Cerrar y seguir participando</button>
             <h2 id="modalTitle">Registra tus Datos para Participar por una Radio Android</h2>
             <form id="registrationForm">
                 <div class="form-group">
@@ -102,14 +120,12 @@
     </div>
 
     <!-- Popup de Premio -->
-    <div id="prizePopup" class="popup" aria-hidden="true" role="dialog" aria-labelledby="prizeTitle">
+    <div id="prizePopup" class="popup modal" aria-hidden="true" role="dialog" aria-labelledby="prizeTitle">
         <div class="popup-content">
             <h2 id="prizeTitle">¡Felicidades!</h2>
             <p>Has ganado: <span id="prizeText"></span></p>
             <div class="prize-actions">
                 <!-- El contenido de prize-actions se actualizará dinámicamente en script.js -->
-                <button id="claimPrizeButton">Canjear Premio</button>
-                <a href="#" id="sharePrizeLink">Compartir en Facebook</a>
             </div>
         </div>
     </div>
@@ -118,7 +134,7 @@
     <div id="termsModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="termsTitle">
         <div class="modal-content">
             <!-- Botón de Cierre Mejorado -->
-            <button id="closeTermsModal" class="close-popup-btn" aria-label="Cerrar Términos y Condiciones">&times;</button>
+            <button id="closeTermsModal" class="close-popup-btn" aria-label="Cerrar Términos y Condiciones">Cerrar y seguir participando</button>
             <h2 id="termsTitle">Términos y Condiciones</h2>
             <p>
                 <!-- Contenido de términos y condiciones -->
@@ -176,7 +192,7 @@
 
             <!-- Botones de Acción -->
             <section class="buttons-section">
-                <button id="spinButton" class="spin-btn" disabled>¡Girar la Ruleta! (0)</button>
+                <button id="spinButton" class="spin-btn" disabled>¡Girar la Ruleta! (0 giros disponibles)</button>
                 <button id="shareButton" class="share-btn">Compartir en Facebook (+3 giros)</button>
             </section>
 

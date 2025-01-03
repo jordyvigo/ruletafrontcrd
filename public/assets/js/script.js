@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const closeTermsModalBtn = document.getElementById("closeTermsModal");
     const toggleMusicButton = document.getElementById("toggleMusicButton"); // Botón de música
     const wheelContainer = document.querySelector('.wheel-container'); // Contenedor de la ruleta
+    const loadingMessage = document.getElementById("loadingMessage"); // Mensaje de carga (spinner)
 
     // ========== SONIDOS ==========
     const spinSound = new Audio("assets/sounds/spin.wav");
@@ -132,57 +133,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /**
-     * Manejar el resultado del giro de la ruleta.
-     * Esta función es llamada por Winwheel.js al finalizar la animación.
-     * @param {object} indicatedSegment - Segmento indicado por el pointer.
-     * @param {object} wheelInstance - Instancia de Winwheel.
-     */
-    window.handleSpinResult = function(indicatedSegment, wheelInstance) {
-        console.log("[handleSpinResult] Animación finalizada.");
-        console.log("[handleSpinResult] Premio seleccionado:", indicatedSegment.text);
-
-        try {
-            // Obtener el premio seleccionado del estado del usuario
-            const prizeText = userState.selectedPrize.trim();
-            winSound.play();
-            console.log("[handleSpinResult] Sonido de victoria reproducido.");
-
-            showPrizePopup(prizeText);
-            console.log("[handleSpinResult] Popup de premio mostrado.");
-
-            updatePrizesList();
-            console.log("[handleSpinResult] Lista de premios actualizada.");
-
-            // Si el premio no es de tipo "sigue intentando" o "giro adicional", lanzar confeti
-            if (
-                !prizeText.toLowerCase().includes("sigue intentando") &&
-                !prizeText.toLowerCase().includes("giro adicional")
-            ) {
-                try {
-                    launchConfetti();
-                    console.log("[handleSpinResult] Confetti lanzado.");
-                } catch (confettiError) {
-                    console.error("[handleSpinResult] Error al lanzar confetti:", confettiError.message);
-                }
-            }
-        } catch (error) {
-            console.error("[handleSpinResult] Error:", error.message);
-            alert(`Hubo un problema al procesar el premio: ${error.message}`);
-        } finally {
-            isSpinning = false;
-            updateSpinButton(); // Re-evaluar el estado del botón
-            wheelContainer.classList.remove('wheel-spinning'); // Remover clase de animación
-            console.log("[handleSpinResult] Estado 'isSpinning' establecido a false.");
-        }
-
-        // Reiniciar rotationAngle para evitar acumulación
-        if (wheel && wheel.rotationAngle !== undefined) {
-            wheel.rotationAngle = wheel.rotationAngle % 360;
-            console.log("[handleSpinResult] wheel.rotationAngle reiniciado a:", wheel.rotationAngle);
-        }
-    };
-
-    /**
      * Girar la ruleta utilizando Winwheel.js.
      */
     async function spinWheel() {
@@ -254,6 +204,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             spinSound.play();
             console.log("[spinWheel] Giro iniciado con stopAngle:", desiredStopAngle);
+
+            // Rastrear el evento de giro con Facebook Pixel
+            if (typeof fbq === 'function') {
+                fbq('track', 'SpinWheel', {
+                    spinsRemaining: userState.spinsAvailable
+                });
+                console.log("[spinWheel] Evento 'SpinWheel' rastreado con Facebook Pixel.");
+            }
+
         } catch (error) {
             console.error("[spinWheel] Error:", error.message);
             alert(`Hubo un problema: ${error.message}`);
@@ -262,6 +221,67 @@ document.addEventListener("DOMContentLoaded", () => {
             wheelContainer.classList.remove('wheel-spinning'); // Remover clase en caso de error
         }
     }
+
+    /**
+     * Manejar el resultado del giro de la ruleta.
+     * Esta función es llamada por Winwheel.js al finalizar la animación.
+     * @param {object} indicatedSegment - Segmento indicado por el pointer.
+     * @param {object} wheelInstance - Instancia de Winwheel.
+     */
+    window.handleSpinResult = function(indicatedSegment, wheelInstance) {
+        console.log("[handleSpinResult] Animación finalizada.");
+        console.log("[handleSpinResult] Premio seleccionado:", indicatedSegment.text);
+
+        try {
+            // Obtener el premio seleccionado del estado del usuario
+            const prizeText = userState.selectedPrize.trim();
+            winSound.play();
+            console.log("[handleSpinResult] Sonido de victoria reproducido.");
+
+            showPrizePopup(prizeText);
+            console.log("[handleSpinResult] Popup de premio mostrado.");
+
+            updatePrizesList();
+            console.log("[handleSpinResult] Lista de premios actualizada.");
+
+            // Si el premio no es de tipo "sigue intentando" o "giro adicional", lanzar confeti
+            if (
+                !prizeText.toLowerCase().includes("sigue intentando") &&
+                !prizeText.toLowerCase().includes("giro adicional")
+            ) {
+                try {
+                    launchConfetti();
+                    console.log("[handleSpinResult] Confetti lanzado.");
+                } catch (confettiError) {
+                    console.error("[handleSpinResult] Error al lanzar confetti:", confettiError.message);
+                }
+            }
+
+            // Rastrear el evento de giro con Facebook Pixel
+            if (typeof fbq === 'function') {
+                fbq('track', 'SpinWheelResult', {
+                    prize: prizeText,
+                    spinsRemaining: userState.spinsAvailable
+                });
+                console.log("[handleSpinResult] Evento 'SpinWheelResult' rastreado con Facebook Pixel.");
+            }
+
+        } catch (error) {
+            console.error("[handleSpinResult] Error:", error.message);
+            alert(`Hubo un problema al procesar el premio: ${error.message}`);
+        } finally {
+            isSpinning = false;
+            updateSpinButton(); // Re-evaluar el estado del botón
+            wheelContainer.classList.remove('wheel-spinning'); // Remover clase de animación
+            console.log("[handleSpinResult] Estado 'isSpinning' establecido a false.");
+        }
+
+        // Reiniciar rotationAngle para evitar acumulación
+        if (wheel && wheel.rotationAngle !== undefined) {
+            wheel.rotationAngle = wheel.rotationAngle % 360;
+            console.log("[handleSpinResult] wheel.rotationAngle reiniciado a:", wheel.rotationAngle);
+        }
+    };
 
     /**
      * Compartir en Facebook con un mensaje personalizado y solicitar giros adicionales.
@@ -287,6 +307,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 updateSpinButton();
                 alert(data.message);
                 console.log("[shareOnFacebook] Giros actualizados:", userState.spinsAvailable);
+
+                // Rastrear el evento de compartir con Facebook Pixel
+                if (typeof fbq === 'function') {
+                    fbq('track', 'Share', {
+                        spinsAdded: 3,
+                        spinsRemaining: userState.spinsAvailable
+                    });
+                    console.log("[shareOnFacebook] Evento 'Share' rastreado con Facebook Pixel.");
+                }
             } else {
                 alert(data.message || "No se pudo añadir giros adicionales.");
                 console.warn("[shareOnFacebook] Problema al añadir giros adicionales:", data.message);
@@ -327,7 +356,7 @@ document.addEventListener("DOMContentLoaded", () => {
             spinButton.disabled = userState.spinsAvailable <= 0 || isSpinning;
             spinButton.textContent =
                 userState.spinsAvailable > 0
-                    ? `¡Girar la Ruleta! (${userState.spinsAvailable})`
+                    ? `¡Girar la Ruleta! (${userState.spinsAvailable} giros disponibles)`
                     : "Sin giros disponibles";
             console.log("[updateSpinButton] Spins disponibles:", userState.spinsAvailable);
             console.log("[updateSpinButton] Estado 'isSpinning':", isSpinning);
@@ -425,6 +454,15 @@ document.addEventListener("DOMContentLoaded", () => {
             updatePrizesList();
             hideLoginModal();
 
+            // Rastrear el evento de registro con Facebook Pixel
+            if (typeof fbq === 'function') {
+                fbq('track', 'CompleteRegistration', {
+                    email: email,
+                    plate: plate
+                });
+                console.log("[submitUserData] Evento 'CompleteRegistration' rastreado con Facebook Pixel.");
+            }
+
             // Opcional: Reproducir la música de fondo automáticamente después del registro
             // backgroundMusic.play().then(() => {
             //     toggleMusicButton.classList.remove('paused');
@@ -466,7 +504,7 @@ document.addEventListener("DOMContentLoaded", () => {
             prizePopup.querySelector(".prize-actions").innerHTML = `
                 <p>Comparte en Facebook para obtener giros adicionales.</p>
                 <button id="shareForSpin" class="share-for-spin-btn">Compartir en Facebook (+3 giros)</button>
-                <button id="closePrizePopup" class="close-popup-btn" aria-label="Cerrar Popup">&times;</button>
+                <button id="closePrizePopup" class="close-popup-btn">Cerrar y seguir participando</button>
             `;
 
             const shareForSpinButton = document.getElementById("shareForSpin");
@@ -484,14 +522,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (closePrizePopupBtn) {
                 closePrizePopupBtn.addEventListener("click", hidePrizePopup);
-                console.log("[showPrizePopup] Botón 'Cerrar' agregado.");
+                console.log("[showPrizePopup] Botón 'Cerrar y seguir participando' agregado.");
             } else {
-                console.error("[showPrizePopup] Botón 'Cerrar' no encontrado.");
+                console.error("[showPrizePopup] Botón 'Cerrar y seguir participando' no encontrado.");
             }
         } else {
             prizePopup.querySelector(".prize-actions").innerHTML = `
                 <button id="claimPrizeButton" class="claim-prize-btn">Canjear</button>
-                <button id="closePrizePopup" class="close-popup-btn" aria-label="Cerrar Popup">&times;</button>
+                <button id="closePrizePopup" class="close-popup-btn">Cerrar y seguir participando</button>
             `;
             const claimPrizeBtn = document.getElementById("claimPrizeButton");
             const closePrizePopupBtn = document.getElementById("closePrizePopup");
@@ -508,15 +546,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (closePrizePopupBtn) {
                 closePrizePopupBtn.addEventListener("click", hidePrizePopup);
-                console.log("[showPrizePopup] Botón 'Cerrar' agregado.");
+                console.log("[showPrizePopup] Botón 'Cerrar y seguir participando' agregado.");
             } else {
-                console.error("[showPrizePopup] Botón 'Cerrar' no encontrado.");
+                console.error("[showPrizePopup] Botón 'Cerrar y seguir participando' no encontrado.");
             }
         }
 
         prizePopup.style.display = "flex"; // Asegurar display flex para centrar
         prizePopup.setAttribute("aria-hidden", "false");
         console.log("[showPrizePopup] Popup de premio mostrado.");
+
+        // Rastrear el evento de canje con Facebook Pixel
+        if (!prizeText.toLowerCase().includes("sigue intentando") &&
+            !prizeText.toLowerCase().includes("giro adicional") &&
+            typeof fbq === 'function') {
+            fbq('track', 'ClaimPrize', {
+                prize: prizeText
+            });
+            console.log("[showPrizePopup] Evento 'ClaimPrize' rastreado con Facebook Pixel.");
+        }
+    }
+
+    /**
+     * Ocultar el popup de premio.
+     */
+    function hidePrizePopup() {
+        if (!prizePopup) return;
+        prizePopup.style.display = "none";
+        prizePopup.setAttribute("aria-hidden", "true");
+        console.log("[hidePrizePopup] Popup de premio ocultado.");
     }
 
     /**
@@ -531,16 +589,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const whatsappURL = `https://wa.me/51932426069?text=${message}`;
         window.open(whatsappURL, "_blank");
         console.log("[sendWhatsAppMessage] Mensaje enviado a WhatsApp:", message);
-    }
 
-    /**
-     * Ocultar el popup de premio.
-     */
-    function hidePrizePopup() {
-        if (!prizePopup) return;
-        prizePopup.style.display = "none";
-        prizePopup.setAttribute("aria-hidden", "true");
-        console.log("[hidePrizePopup] Popup de premio ocultado.");
+        // Rastrear el evento de canje con Facebook Pixel
+        if (typeof fbq === 'function') {
+            fbq('track', 'ClaimPrize', {
+                prize: prizeText
+            });
+            console.log("[sendWhatsAppMessage] Evento 'ClaimPrize' rastreado con Facebook Pixel.");
+        }
     }
 
     /**
@@ -627,6 +683,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         prizesList.appendChild(ul);
         console.log("[updatePrizesList] Lista de premios actualizada.");
+
+        // Rastrear el evento de visualización de premios con Facebook Pixel
+        if (typeof fbq === 'function') {
+            fbq('track', 'ViewPrizes', {
+                numberOfPrizes: userState.prizes.length
+            });
+            console.log("[updatePrizesList] Evento 'ViewPrizes' rastreado con Facebook Pixel.");
+        }
     }
 
     /**
@@ -708,57 +772,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /**
-     * Manejar el resultado del giro de la ruleta.
-     * Esta función es llamada por Winwheel.js al finalizar la animación.
-     * @param {object} indicatedSegment - Segmento indicado por el pointer.
-     * @param {object} wheelInstance - Instancia de Winwheel.
-     */
-    window.handleSpinResult = function(indicatedSegment, wheelInstance) {
-        console.log("[handleSpinResult] Animación finalizada.");
-        console.log("[handleSpinResult] Premio seleccionado:", indicatedSegment.text);
-
-        try {
-            // Obtener el premio seleccionado del estado del usuario
-            const prizeText = userState.selectedPrize.trim();
-            winSound.play();
-            console.log("[handleSpinResult] Sonido de victoria reproducido.");
-
-            showPrizePopup(prizeText);
-            console.log("[handleSpinResult] Popup de premio mostrado.");
-
-            updatePrizesList();
-            console.log("[handleSpinResult] Lista de premios actualizada.");
-
-            // Si el premio no es de tipo "sigue intentando" o "giro adicional", lanzar confeti
-            if (
-                !prizeText.toLowerCase().includes("sigue intentando") &&
-                !prizeText.toLowerCase().includes("giro adicional")
-            ) {
-                try {
-                    launchConfetti();
-                    console.log("[handleSpinResult] Confetti lanzado.");
-                } catch (confettiError) {
-                    console.error("[handleSpinResult] Error al lanzar confetti:", confettiError.message);
-                }
-            }
-        } catch (error) {
-            console.error("[handleSpinResult] Error:", error.message);
-            alert(`Hubo un problema al procesar el premio: ${error.message}`);
-        } finally {
-            isSpinning = false;
-            updateSpinButton(); // Re-evaluar el estado del botón
-            wheelContainer.classList.remove('wheel-spinning'); // Remover clase de animación
-            console.log("[handleSpinResult] Estado 'isSpinning' establecido a false.");
-        }
-
-        // Reiniciar rotationAngle para evitar acumulación
-        if (wheel && wheel.rotationAngle !== undefined) {
-            wheel.rotationAngle = wheel.rotationAngle % 360;
-            console.log("[handleSpinResult] wheel.rotationAngle reiniciado a:", wheel.rotationAngle);
-        }
-    };
-
-    /**
      * Mostrar el popup de premio con el texto del premio obtenido.
      * @param {string} prizeText - Texto del premio.
      */
@@ -779,7 +792,7 @@ document.addEventListener("DOMContentLoaded", () => {
             prizePopup.querySelector(".prize-actions").innerHTML = `
                 <p>Comparte en Facebook para obtener giros adicionales.</p>
                 <button id="shareForSpin" class="share-for-spin-btn">Compartir en Facebook (+3 giros)</button>
-                <button id="closePrizePopup" class="close-popup-btn" aria-label="Cerrar Popup">&times;</button>
+                <button id="closePrizePopup" class="close-popup-btn">Cerrar y seguir participando</button>
             `;
 
             const shareForSpinButton = document.getElementById("shareForSpin");
@@ -797,14 +810,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (closePrizePopupBtn) {
                 closePrizePopupBtn.addEventListener("click", hidePrizePopup);
-                console.log("[showPrizePopup] Botón 'Cerrar' agregado.");
+                console.log("[showPrizePopup] Botón 'Cerrar y seguir participando' agregado.");
             } else {
-                console.error("[showPrizePopup] Botón 'Cerrar' no encontrado.");
+                console.error("[showPrizePopup] Botón 'Cerrar y seguir participando' no encontrado.");
             }
         } else {
             prizePopup.querySelector(".prize-actions").innerHTML = `
                 <button id="claimPrizeButton" class="claim-prize-btn">Canjear</button>
-                <button id="closePrizePopup" class="close-popup-btn" aria-label="Cerrar Popup">&times;</button>
+                <button id="closePrizePopup" class="close-popup-btn">Cerrar y seguir participando</button>
             `;
             const claimPrizeBtn = document.getElementById("claimPrizeButton");
             const closePrizePopupBtn = document.getElementById("closePrizePopup");
@@ -821,15 +834,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (closePrizePopupBtn) {
                 closePrizePopupBtn.addEventListener("click", hidePrizePopup);
-                console.log("[showPrizePopup] Botón 'Cerrar' agregado.");
+                console.log("[showPrizePopup] Botón 'Cerrar y seguir participando' agregado.");
             } else {
-                console.error("[showPrizePopup] Botón 'Cerrar' no encontrado.");
+                console.error("[showPrizePopup] Botón 'Cerrar y seguir participando' no encontrado.");
             }
         }
 
         prizePopup.style.display = "flex"; // Asegurar display flex para centrar
         prizePopup.setAttribute("aria-hidden", "false");
         console.log("[showPrizePopup] Popup de premio mostrado.");
+
+        // Rastrear el evento de canje con Facebook Pixel
+        if (!prizeText.toLowerCase().includes("sigue intentando") &&
+            !prizeText.toLowerCase().includes("giro adicional") &&
+            typeof fbq === 'function') {
+            fbq('track', 'ClaimPrize', {
+                prize: prizeText
+            });
+            console.log("[showPrizePopup] Evento 'ClaimPrize' rastreado con Facebook Pixel.");
+        }
     }
 
     /**
@@ -854,6 +877,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const whatsappURL = `https://wa.me/51932426069?text=${message}`;
         window.open(whatsappURL, "_blank");
         console.log("[sendWhatsAppMessage] Mensaje enviado a WhatsApp:", message);
+
+        // Rastrear el evento de canje con Facebook Pixel
+        if (typeof fbq === 'function') {
+            fbq('track', 'ClaimPrize', {
+                prize: prizeText
+            });
+            console.log("[sendWhatsAppMessage] Evento 'ClaimPrize' rastreado con Facebook Pixel.");
+        }
     }
 
     /**
@@ -940,6 +971,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         prizesList.appendChild(ul);
         console.log("[updatePrizesList] Lista de premios actualizada.");
+
+        // Rastrear el evento de visualización de premios con Facebook Pixel
+        if (typeof fbq === 'function') {
+            fbq('track', 'ViewPrizes', {
+                numberOfPrizes: userState.prizes.length
+            });
+            console.log("[updatePrizesList] Evento 'ViewPrizes' rastreado con Facebook Pixel.");
+        }
     }
 
     /**
@@ -977,691 +1016,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /**
-     * Mostrar el popup de premio con el texto del premio obtenido.
-     * @param {string} prizeText - Texto del premio.
-     */
-    function showPrizePopup(prizeText) {
-        if (!prizePopup || !prizeTextElement) {
-            console.error("Elemento del popup no encontrado.");
-            return;
-        }
-
-        console.log("[showPrizePopup] Mostrando premio:", prizeText);
-
-        prizeTextElement.textContent = prizeText;
-
-        if (
-            prizeText.toLowerCase().includes("sigue intentando") ||
-            prizeText.toLowerCase().includes("giro adicional")
-        ) {
-            prizePopup.querySelector(".prize-actions").innerHTML = `
-                <p>Comparte en Facebook para obtener giros adicionales.</p>
-                <button id="shareForSpin" class="share-for-spin-btn">Compartir en Facebook (+3 giros)</button>
-                <button id="closePrizePopup" class="close-popup-btn" aria-label="Cerrar Popup">&times;</button>
-            `;
-
-            const shareForSpinButton = document.getElementById("shareForSpin");
-            const closePrizePopupBtn = document.getElementById("closePrizePopup");
-
-            if (shareForSpinButton) {
-                shareForSpinButton.addEventListener("click", () => {
-                    shareOnFacebook();
-                    hidePrizePopup();
-                });
-                console.log("[showPrizePopup] Botón 'Compartir en Facebook' agregado.");
-            } else {
-                console.error("[showPrizePopup] Botón 'Compartir en Facebook' no encontrado.");
-            }
-
-            if (closePrizePopupBtn) {
-                closePrizePopupBtn.addEventListener("click", hidePrizePopup);
-                console.log("[showPrizePopup] Botón 'Cerrar' agregado.");
-            } else {
-                console.error("[showPrizePopup] Botón 'Cerrar' no encontrado.");
-            }
-        } else {
-            prizePopup.querySelector(".prize-actions").innerHTML = `
-                <button id="claimPrizeButton" class="claim-prize-btn">Canjear</button>
-                <button id="closePrizePopup" class="close-popup-btn" aria-label="Cerrar Popup">&times;</button>
-            `;
-            const claimPrizeBtn = document.getElementById("claimPrizeButton");
-            const closePrizePopupBtn = document.getElementById("closePrizePopup");
-
-            if (claimPrizeBtn) {
-                claimPrizeBtn.addEventListener("click", () => {
-                    sendWhatsAppMessage(prizeText);
-                    hidePrizePopup();
-                });
-                console.log("[showPrizePopup] Botón 'Canjear' agregado.");
-            } else {
-                console.error("[showPrizePopup] Botón 'Canjear' no encontrado.");
-            }
-
-            if (closePrizePopupBtn) {
-                closePrizePopupBtn.addEventListener("click", hidePrizePopup);
-                console.log("[showPrizePopup] Botón 'Cerrar' agregado.");
-            } else {
-                console.error("[showPrizePopup] Botón 'Cerrar' no encontrado.");
-            }
-        }
-
-        prizePopup.style.display = "flex"; // Asegurar display flex para centrar
-        prizePopup.setAttribute("aria-hidden", "false");
-        console.log("[showPrizePopup] Popup de premio mostrado.");
-    }
-
-    /**
-     * Ocultar el popup de premio.
-     */
-    function hidePrizePopup() {
-        if (!prizePopup) return;
-        prizePopup.style.display = "none";
-        prizePopup.setAttribute("aria-hidden", "true");
-        console.log("[hidePrizePopup] Popup de premio ocultado.");
-    }
-
-    /**
-     * Enviar un mensaje a WhatsApp para canjear el premio.
-     * @param {string} prizeText - Texto del premio.
-     */
-    function sendWhatsAppMessage(prizeText) {
-        const plate = userState.plate || "XXXXXX";
-        const message = encodeURIComponent(
-            `SOY EL DUEÑO DEL VEHICULO ${plate} Y DESEO CANJEAR EL PREMIO ${prizeText}`
-        );
-        const whatsappURL = `https://wa.me/51932426069?text=${message}`;
-        window.open(whatsappURL, "_blank");
-        console.log("[sendWhatsAppMessage] Mensaje enviado a WhatsApp:", message);
-    }
-
-    /**
-     * Manejar el registro de usuario enviando datos al servidor.
-     */
-    async function submitUserData() {
-        const plateInput = document.getElementById("plate");
-        const emailInput = document.getElementById("email");
-        const phoneInput = document.getElementById("phone");
-        const loadingMessage = document.getElementById("loadingMessage");
-
-        if (!plateInput || !emailInput || !phoneInput) {
-            alert("Faltan campos necesarios.");
-            return;
-        }
-
-        const plate = plateInput.value.trim().toUpperCase();
-        const email = emailInput.value.trim();
-        const phone = phoneInput.value.trim();
-
-        // Validaciones
-        const platePattern = /^[A-Z0-9]{6}$/;
-        const phonePattern = /^[0-9]{9}$/;
-
-        if (!platePattern.test(plate)) {
-            alert("La placa debe tener 6 caracteres alfanuméricos.");
-            return;
-        }
-        if (!phonePattern.test(phone)) {
-            alert("El teléfono debe tener 9 dígitos.");
-            return;
-        }
-        if (!email) {
-            alert("Por favor, ingresa un correo electrónico válido.");
-            return;
-        }
-
-        try {
-            // Mostrar el spinner y deshabilitar el botón
-            submitDataButton.classList.add("loading");
-            submitDataButton.disabled = true;
-            loadingMessage.style.display = "block";
-
-            const response = await fetch("https://ruletabackcardroid.vercel.app/api/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ plate, email, phone }),
-            });
-
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.message || "Error en el registro.");
-
-            userState.plate = plate;
-            userState.email = email;
-            userState.phone = phone;
-            userState.spinsAvailable = data.user.spinsAvailable;
-            userState.prizes = data.user.prizes;
-            userState.selectedPrize = ""; // Resetear el premio seleccionado
-
-            console.log("[submitUserData] Usuario registrado:", userState);
-
-            updateSpinButton();
-            updatePrizesList();
-            hideLoginModal();
-
-            // Opcional: Reproducir la música de fondo automáticamente después del registro
-            // backgroundMusic.play().then(() => {
-            //     toggleMusicButton.classList.remove('paused');
-            //     toggleMusicButton.classList.add('playing');
-            //     toggleMusicButton.setAttribute('aria-label', 'Pausar Música de Fondo');
-            // }).catch(error => {
-            //     console.error("[submitUserData] Error al reproducir la música de fondo:", error);
-            // });
-
-        } catch (error) {
-            console.error("[submitUserData] Error:", error.message);
-            alert(`Hubo un problema al registrar: ${error.message}`);
-        } finally {
-            // Ocultar el spinner y habilitar el botón
-            submitDataButton.classList.remove("loading");
-            submitDataButton.disabled = false;
-            loadingMessage.style.display = "none";
-        }
-    }
-
-    /**
-     * Mostrar el modal de términos y condiciones.
-     */
-    function showTermsModal() {
-        if (termsModal) {
-            termsModal.style.display = "flex"; // Asegurar que sea "flex"
-            termsModal.setAttribute("aria-hidden", "false");
-            console.log("[showTermsModal] Modal de términos mostrado.");
-        }
-    }
-
-    /**
-     * Ocultar el modal de términos y condiciones.
-     */
-    function hideTermsModal() {
-        if (termsModal) {
-            termsModal.style.display = "none";
-            termsModal.setAttribute("aria-hidden", "true");
-            console.log("[hideTermsModal] Modal de términos ocultado.");
-        }
-    }
-
-    /**
-     * Mostrar el popup de premio con el texto del premio obtenido.
-     * @param {string} prizeText - Texto del premio.
-     */
-    function showPrizePopup(prizeText) {
-        if (!prizePopup || !prizeTextElement) {
-            console.error("Elemento del popup no encontrado.");
-            return;
-        }
-
-        console.log("[showPrizePopup] Mostrando premio:", prizeText);
-
-        prizeTextElement.textContent = prizeText;
-
-        if (
-            prizeText.toLowerCase().includes("sigue intentando") ||
-            prizeText.toLowerCase().includes("giro adicional")
-        ) {
-            prizePopup.querySelector(".prize-actions").innerHTML = `
-                <p>Comparte en Facebook para obtener giros adicionales.</p>
-                <button id="shareForSpin" class="share-for-spin-btn">Compartir en Facebook (+3 giros)</button>
-                <button id="closePrizePopup" class="close-popup-btn" aria-label="Cerrar Popup">&times;</button>
-            `;
-
-            const shareForSpinButton = document.getElementById("shareForSpin");
-            const closePrizePopupBtn = document.getElementById("closePrizePopup");
-
-            if (shareForSpinButton) {
-                shareForSpinButton.addEventListener("click", () => {
-                    shareOnFacebook();
-                    hidePrizePopup();
-                });
-                console.log("[showPrizePopup] Botón 'Compartir en Facebook' agregado.");
-            } else {
-                console.error("[showPrizePopup] Botón 'Compartir en Facebook' no encontrado.");
-            }
-
-            if (closePrizePopupBtn) {
-                closePrizePopupBtn.addEventListener("click", hidePrizePopup);
-                console.log("[showPrizePopup] Botón 'Cerrar' agregado.");
-            } else {
-                console.error("[showPrizePopup] Botón 'Cerrar' no encontrado.");
-            }
-        } else {
-            prizePopup.querySelector(".prize-actions").innerHTML = `
-                <button id="claimPrizeButton" class="claim-prize-btn">Canjear</button>
-                <button id="closePrizePopup" class="close-popup-btn" aria-label="Cerrar Popup">&times;</button>
-            `;
-            const claimPrizeBtn = document.getElementById("claimPrizeButton");
-            const closePrizePopupBtn = document.getElementById("closePrizePopup");
-
-            if (claimPrizeBtn) {
-                claimPrizeBtn.addEventListener("click", () => {
-                    sendWhatsAppMessage(prizeText);
-                    hidePrizePopup();
-                });
-                console.log("[showPrizePopup] Botón 'Canjear' agregado.");
-            } else {
-                console.error("[showPrizePopup] Botón 'Canjear' no encontrado.");
-            }
-
-            if (closePrizePopupBtn) {
-                closePrizePopupBtn.addEventListener("click", hidePrizePopup);
-                console.log("[showPrizePopup] Botón 'Cerrar' agregado.");
-            } else {
-                console.error("[showPrizePopup] Botón 'Cerrar' no encontrado.");
-            }
-        }
-
-        prizePopup.style.display = "flex"; // Asegurar display flex para centrar
-        prizePopup.setAttribute("aria-hidden", "false");
-        console.log("[showPrizePopup] Popup de premio mostrado.");
-    }
-
-    /**
-     * Compartir en Facebook con un mensaje personalizado y solicitar giros adicionales.
-     */
-    async function shareOnFacebook() {
-        const shareText = "LLEVATE UNA RADIO 100% GRATIS CON LA RULETA CARDROID";
-        const url = encodeURIComponent(window.location.href);
-        const message = encodeURIComponent(shareText);
-        const shareURL = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${message}`;
-        window.open(shareURL, '_blank', 'width=600,height=400');
-
-        try {
-            const response = await fetch("https://ruletabackcardroid.vercel.app/api/share", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ plate: userState.plate }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                userState.spinsAvailable = data.spinsAvailable;
-                updateSpinButton();
-                alert(data.message);
-                console.log("[shareOnFacebook] Giros actualizados:", userState.spinsAvailable);
-            } else {
-                alert(data.message || "No se pudo añadir giros adicionales.");
-                console.warn("[shareOnFacebook] Problema al añadir giros adicionales:", data.message);
-            }
-        } catch (error) {
-            console.error("[shareOnFacebook] Error:", error.message);
-            alert("Hubo un problema al procesar tu solicitud. Intenta nuevamente más tarde.");
-        }
-    }
-
-    /**
-     * Lanzar confeti utilizando canvas-confetti.
-     */
-    function launchConfetti() {
-        console.log("[launchConfetti] Intentando lanzar confetti.");
-        try {
-            confetti({
-                particleCount: 300,
-                spread: 360,
-                origin: { x: 0.5, y: 0.5 },
-                gravity: 1,
-                ticks: 200,
-                scalar: 1.2,
-                disableForReducedMotion: true,
-                zIndex: 9998,
-            });
-            console.log("[launchConfetti] Confetti lanzado exitosamente.");
-        } catch (error) {
-            console.error("[launchConfetti] Error al lanzar confetti:", error.message);
-        }
-    }
-
-    /**
-     * Manejar el resultado del giro de la ruleta.
-     * Esta función es llamada por Winwheel.js al finalizar la animación.
-     * @param {object} indicatedSegment - Segmento indicado por el pointer.
-     * @param {object} wheelInstance - Instancia de Winwheel.
-     */
-    window.handleSpinResult = function(indicatedSegment, wheelInstance) {
-        console.log("[handleSpinResult] Animación finalizada.");
-        console.log("[handleSpinResult] Premio seleccionado:", indicatedSegment.text);
-
-        try {
-            // Obtener el premio seleccionado del estado del usuario
-            const prizeText = userState.selectedPrize.trim();
-            winSound.play();
-            console.log("[handleSpinResult] Sonido de victoria reproducido.");
-
-            showPrizePopup(prizeText);
-            console.log("[handleSpinResult] Popup de premio mostrado.");
-
-            updatePrizesList();
-            console.log("[handleSpinResult] Lista de premios actualizada.");
-
-            // Si el premio no es de tipo "sigue intentando" o "giro adicional", lanzar confeti
-            if (
-                !prizeText.toLowerCase().includes("sigue intentando") &&
-                !prizeText.toLowerCase().includes("giro adicional")
-            ) {
-                try {
-                    launchConfetti();
-                    console.log("[handleSpinResult] Confetti lanzado.");
-                } catch (confettiError) {
-                    console.error("[handleSpinResult] Error al lanzar confetti:", confettiError.message);
-                }
-            }
-        } catch (error) {
-            console.error("[handleSpinResult] Error:", error.message);
-            alert(`Hubo un problema al procesar el premio: ${error.message}`);
-        } finally {
-            isSpinning = false;
-            updateSpinButton(); // Re-evaluar el estado del botón
-            wheelContainer.classList.remove('wheel-spinning'); // Remover clase de animación
-            console.log("[handleSpinResult] Estado 'isSpinning' establecido a false.");
-        }
-
-        // Reiniciar rotationAngle para evitar acumulación
-        if (wheel && wheel.rotationAngle !== undefined) {
-            wheel.rotationAngle = wheel.rotationAngle % 360;
-            console.log("[handleSpinResult] wheel.rotationAngle reiniciado a:", wheel.rotationAngle);
-        }
-    };
-
-    /**
-     * Manejar el registro de usuario enviando datos al servidor.
-     */
-    async function submitUserData() {
-        const plateInput = document.getElementById("plate");
-        const emailInput = document.getElementById("email");
-        const phoneInput = document.getElementById("phone");
-        const loadingMessage = document.getElementById("loadingMessage");
-
-        if (!plateInput || !emailInput || !phoneInput) {
-            alert("Faltan campos necesarios.");
-            return;
-        }
-
-        const plate = plateInput.value.trim().toUpperCase();
-        const email = emailInput.value.trim();
-        const phone = phoneInput.value.trim();
-
-        // Validaciones
-        const platePattern = /^[A-Z0-9]{6}$/;
-        const phonePattern = /^[0-9]{9}$/;
-
-        if (!platePattern.test(plate)) {
-            alert("La placa debe tener 6 caracteres alfanuméricos.");
-            return;
-        }
-        if (!phonePattern.test(phone)) {
-            alert("El teléfono debe tener 9 dígitos.");
-            return;
-        }
-        if (!email) {
-            alert("Por favor, ingresa un correo electrónico válido.");
-            return;
-        }
-
-        try {
-            // Mostrar el spinner y deshabilitar el botón
-            submitDataButton.classList.add("loading");
-            submitDataButton.disabled = true;
-            loadingMessage.style.display = "block";
-
-            const response = await fetch("https://ruletabackcardroid.vercel.app/api/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ plate, email, phone }),
-            });
-
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.message || "Error en el registro.");
-
-            userState.plate = plate;
-            userState.email = email;
-            userState.phone = phone;
-            userState.spinsAvailable = data.user.spinsAvailable;
-            userState.prizes = data.user.prizes;
-            userState.selectedPrize = ""; // Resetear el premio seleccionado
-
-            console.log("[submitUserData] Usuario registrado:", userState);
-
-            updateSpinButton();
-            updatePrizesList();
-            hideLoginModal();
-
-            // Opcional: Reproducir la música de fondo automáticamente después del registro
-            // backgroundMusic.play().then(() => {
-            //     toggleMusicButton.classList.remove('paused');
-            //     toggleMusicButton.classList.add('playing');
-            //     toggleMusicButton.setAttribute('aria-label', 'Pausar Música de Fondo');
-            // }).catch(error => {
-            //     console.error("[submitUserData] Error al reproducir la música de fondo:", error);
-            // });
-
-        } catch (error) {
-            console.error("[submitUserData] Error:", error.message);
-            alert(`Hubo un problema al registrar: ${error.message}`);
-        } finally {
-            // Ocultar el spinner y habilitar el botón
-            submitDataButton.classList.remove("loading");
-            submitDataButton.disabled = false;
-            loadingMessage.style.display = "none";
-        }
-    }
-
-    /**
-     * Mostrar el popup de premio con el texto del premio obtenido.
-     * @param {string} prizeText - Texto del premio.
-     */
-    function showPrizePopup(prizeText) {
-        if (!prizePopup || !prizeTextElement) {
-            console.error("Elemento del popup no encontrado.");
-            return;
-        }
-
-        console.log("[showPrizePopup] Mostrando premio:", prizeText);
-
-        prizeTextElement.textContent = prizeText;
-
-        if (
-            prizeText.toLowerCase().includes("sigue intentando") ||
-            prizeText.toLowerCase().includes("giro adicional")
-        ) {
-            prizePopup.querySelector(".prize-actions").innerHTML = `
-                <p>Comparte en Facebook para obtener giros adicionales.</p>
-                <button id="shareForSpin" class="share-for-spin-btn">Compartir en Facebook (+3 giros)</button>
-                <button id="closePrizePopup" class="close-popup-btn" aria-label="Cerrar Popup">&times;</button>
-            `;
-
-            const shareForSpinButton = document.getElementById("shareForSpin");
-            const closePrizePopupBtn = document.getElementById("closePrizePopup");
-
-            if (shareForSpinButton) {
-                shareForSpinButton.addEventListener("click", () => {
-                    shareOnFacebook();
-                    hidePrizePopup();
-                });
-                console.log("[showPrizePopup] Botón 'Compartir en Facebook' agregado.");
-            } else {
-                console.error("[showPrizePopup] Botón 'Compartir en Facebook' no encontrado.");
-            }
-
-            if (closePrizePopupBtn) {
-                closePrizePopupBtn.addEventListener("click", hidePrizePopup);
-                console.log("[showPrizePopup] Botón 'Cerrar' agregado.");
-            } else {
-                console.error("[showPrizePopup] Botón 'Cerrar' no encontrado.");
-            }
-        } else {
-            prizePopup.querySelector(".prize-actions").innerHTML = `
-                <button id="claimPrizeButton" class="claim-prize-btn">Canjear</button>
-                <button id="closePrizePopup" class="close-popup-btn" aria-label="Cerrar Popup">&times;</button>
-            `;
-            const claimPrizeBtn = document.getElementById("claimPrizeButton");
-            const closePrizePopupBtn = document.getElementById("closePrizePopup");
-
-            if (claimPrizeBtn) {
-                claimPrizeBtn.addEventListener("click", () => {
-                    sendWhatsAppMessage(prizeText);
-                    hidePrizePopup();
-                });
-                console.log("[showPrizePopup] Botón 'Canjear' agregado.");
-            } else {
-                console.error("[showPrizePopup] Botón 'Canjear' no encontrado.");
-            }
-
-            if (closePrizePopupBtn) {
-                closePrizePopupBtn.addEventListener("click", hidePrizePopup);
-                console.log("[showPrizePopup] Botón 'Cerrar' agregado.");
-            } else {
-                console.error("[showPrizePopup] Botón 'Cerrar' no encontrado.");
-            }
-        }
-
-        prizePopup.style.display = "flex"; // Asegurar display flex para centrar
-        prizePopup.setAttribute("aria-hidden", "false");
-        console.log("[showPrizePopup] Popup de premio mostrado.");
-    }
-
-    /**
-     * Compartir en Facebook con un mensaje personalizado y solicitar giros adicionales.
-     */
-    async function shareOnFacebook() {
-        const shareText = "LLEVATE UNA RADIO 100% GRATIS CON LA RULETA CARDROID";
-        const url = encodeURIComponent(window.location.href);
-        const message = encodeURIComponent(shareText);
-        const shareURL = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${message}`;
-        window.open(shareURL, '_blank', 'width=600,height=400');
-
-        try {
-            const response = await fetch("https://ruletabackcardroid.vercel.app/api/share", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ plate: userState.plate }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                userState.spinsAvailable = data.spinsAvailable;
-                updateSpinButton();
-                alert(data.message);
-                console.log("[shareOnFacebook] Giros actualizados:", userState.spinsAvailable);
-            } else {
-                alert(data.message || "No se pudo añadir giros adicionales.");
-                console.warn("[shareOnFacebook] Problema al añadir giros adicionales:", data.message);
-            }
-        } catch (error) {
-            console.error("[shareOnFacebook] Error:", error.message);
-            alert("Hubo un problema al procesar tu solicitud. Intenta nuevamente más tarde.");
-        }
-    }
-
-    /**
-     * Lanzar confeti utilizando canvas-confetti.
-     */
-    function launchConfetti() {
-        console.log("[launchConfetti] Intentando lanzar confetti.");
-        try {
-            confetti({
-                particleCount: 300,
-                spread: 360,
-                origin: { x: 0.5, y: 0.5 },
-                gravity: 1,
-                ticks: 200,
-                scalar: 1.2,
-                disableForReducedMotion: true,
-                zIndex: 9998,
-            });
-            console.log("[launchConfetti] Confetti lanzado exitosamente.");
-        } catch (error) {
-            console.error("[launchConfetti] Error al lanzar confetti:", error.message);
-        }
-    }
-
-    /**
-     * Mostrar el popup de premio con el texto del premio obtenido.
-     * @param {string} prizeText - Texto del premio.
-     */
-    function showPrizePopup(prizeText) {
-        if (!prizePopup || !prizeTextElement) {
-            console.error("Elemento del popup no encontrado.");
-            return;
-        }
-
-        console.log("[showPrizePopup] Mostrando premio:", prizeText);
-
-        prizeTextElement.textContent = prizeText;
-
-        if (
-            prizeText.toLowerCase().includes("sigue intentando") ||
-            prizeText.toLowerCase().includes("giro adicional")
-        ) {
-            prizePopup.querySelector(".prize-actions").innerHTML = `
-                <p>Comparte en Facebook para obtener giros adicionales.</p>
-                <button id="shareForSpin" class="share-for-spin-btn">Compartir en Facebook (+3 giros)</button>
-                <button id="closePrizePopup" class="close-popup-btn" aria-label="Cerrar Popup">&times;</button>
-            `;
-
-            const shareForSpinButton = document.getElementById("shareForSpin");
-            const closePrizePopupBtn = document.getElementById("closePrizePopup");
-
-            if (shareForSpinButton) {
-                shareForSpinButton.addEventListener("click", () => {
-                    shareOnFacebook();
-                    hidePrizePopup();
-                });
-                console.log("[showPrizePopup] Botón 'Compartir en Facebook' agregado.");
-            } else {
-                console.error("[showPrizePopup] Botón 'Compartir en Facebook' no encontrado.");
-            }
-
-            if (closePrizePopupBtn) {
-                closePrizePopupBtn.addEventListener("click", hidePrizePopup);
-                console.log("[showPrizePopup] Botón 'Cerrar' agregado.");
-            } else {
-                console.error("[showPrizePopup] Botón 'Cerrar' no encontrado.");
-            }
-        } else {
-            prizePopup.querySelector(".prize-actions").innerHTML = `
-                <button id="claimPrizeButton" class="claim-prize-btn">Canjear</button>
-                <button id="closePrizePopup" class="close-popup-btn" aria-label="Cerrar Popup">&times;</button>
-            `;
-            const claimPrizeBtn = document.getElementById("claimPrizeButton");
-            const closePrizePopupBtn = document.getElementById("closePrizePopup");
-
-            if (claimPrizeBtn) {
-                claimPrizeBtn.addEventListener("click", () => {
-                    sendWhatsAppMessage(prizeText);
-                    hidePrizePopup();
-                });
-                console.log("[showPrizePopup] Botón 'Canjear' agregado.");
-            } else {
-                console.error("[showPrizePopup] Botón 'Canjear' no encontrado.");
-            }
-
-            if (closePrizePopupBtn) {
-                closePrizePopupBtn.addEventListener("click", hidePrizePopup);
-                console.log("[showPrizePopup] Botón 'Cerrar' agregado.");
-            } else {
-                console.error("[showPrizePopup] Botón 'Cerrar' no encontrado.");
-            }
-        }
-
-        prizePopup.style.display = "flex"; // Asegurar display flex para centrar
-        prizePopup.setAttribute("aria-hidden", "false");
-        console.log("[showPrizePopup] Popup de premio mostrado.");
-    }
-
-    /**
-     * Enviar un mensaje a WhatsApp para canjear el premio.
-     * @param {string} prizeText - Texto del premio.
-     */
-    function sendWhatsAppMessage(prizeText) {
-        const plate = userState.plate || "XXXXXX";
-        const message = encodeURIComponent(
-            `SOY EL DUEÑO DEL VEHICULO ${plate} Y DESEO CANJEAR EL PREMIO ${prizeText}`
-        );
-        const whatsappURL = `https://wa.me/51932426069?text=${message}`;
-        window.open(whatsappURL, "_blank");
-        console.log("[sendWhatsAppMessage] Mensaje enviado a WhatsApp:", message);
-    }
-
-    /**
      * Manejar la reproducción y pausa de la música de fondo.
      */
     function handleMusicToggle() {
@@ -1685,6 +1039,98 @@ document.addEventListener("DOMContentLoaded", () => {
             toggleMusicButton.classList.add('paused');
             toggleMusicButton.setAttribute('aria-label', 'Reproducir Música de Fondo');
             console.log("[handleMusicToggle] Música de fondo pausada.");
+        }
+    }
+
+    /**
+     * Manejar el registro de usuario enviando datos al servidor.
+     */
+    async function submitUserData() {
+        const plateInput = document.getElementById("plate");
+        const emailInput = document.getElementById("email");
+        const phoneInput = document.getElementById("phone");
+        const loadingMessage = document.getElementById("loadingMessage");
+
+        if (!plateInput || !emailInput || !phoneInput) {
+            alert("Faltan campos necesarios.");
+            return;
+        }
+
+        const plate = plateInput.value.trim().toUpperCase();
+        const email = emailInput.value.trim();
+        const phone = phoneInput.value.trim();
+
+        // Validaciones
+        const platePattern = /^[A-Z0-9]{6}$/;
+        const phonePattern = /^[0-9]{9}$/;
+
+        if (!platePattern.test(plate)) {
+            alert("La placa debe tener 6 caracteres alfanuméricos.");
+            return;
+        }
+        if (!phonePattern.test(phone)) {
+            alert("El teléfono debe tener 9 dígitos.");
+            return;
+        }
+        if (!email) {
+            alert("Por favor, ingresa un correo electrónico válido.");
+            return;
+        }
+
+        try {
+            // Mostrar el spinner y deshabilitar el botón
+            submitDataButton.classList.add("loading");
+            submitDataButton.disabled = true;
+            loadingMessage.style.display = "block";
+
+            const response = await fetch("https://ruletabackcardroid.vercel.app/api/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ plate, email, phone }),
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || "Error en el registro.");
+
+            userState.plate = plate;
+            userState.email = email;
+            userState.phone = phone;
+            userState.spinsAvailable = data.user.spinsAvailable;
+            userState.prizes = data.user.prizes;
+            userState.selectedPrize = ""; // Resetear el premio seleccionado
+
+            console.log("[submitUserData] Usuario registrado:", userState);
+
+            updateSpinButton();
+            updatePrizesList();
+            hideLoginModal();
+
+            // Rastrear el evento de registro con Facebook Pixel
+            if (typeof fbq === 'function') {
+                fbq('track', 'CompleteRegistration', {
+                    email: email,
+                    plate: plate
+                });
+                console.log("[submitUserData] Evento 'CompleteRegistration' rastreado con Facebook Pixel.");
+            }
+
+            // Opcional: Reproducir la música de fondo automáticamente después del registro
+            // backgroundMusic.play().then(() => {
+            //     toggleMusicButton.classList.remove('paused');
+            //     toggleMusicButton.classList.add('playing');
+            //     toggleMusicButton.setAttribute('aria-label', 'Pausar Música de Fondo');
+            // }).catch(error => {
+            //     console.error("[submitUserData] Error al reproducir la música de fondo:", error);
+            // });
+
+        } catch (error) {
+            console.error("[submitUserData] Error:", error.message);
+            alert(`Hubo un problema al registrar: ${error.message}`);
+        } finally {
+            // Ocultar el spinner y habilitar el botón
+            submitDataButton.classList.remove("loading");
+            submitDataButton.disabled = false;
+            loadingMessage.style.display = "none";
         }
     }
 

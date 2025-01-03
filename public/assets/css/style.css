@@ -244,9 +244,24 @@ body {
     text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
     font-size: 2.5em;
     font-family: var(--casino-font);
+    background: rgba(0,0,0,0.5); /* Añadir un fondo semi-transparente */
+    padding: 10px 20px;
+    border-radius: 10px;
 }
 
-/* Animación de Pulso */
+.animated-text::after {
+    content: '';
+    position: absolute;
+    top: -5%;
+    left: -5%;
+    width: 110%;
+    height: 110%;
+    border-radius: 50%;
+    background: rgba(255, 215, 0, 0.2);
+    animation: glow 3s infinite alternate;
+    z-index: -1;
+}
+
 @keyframes pulse {
     0% {
         transform: scale(1);
@@ -260,20 +275,6 @@ body {
         transform: scale(1);
         opacity: 1;
     }
-}
-
-/* Efecto de Resplandor Continuo */
-.animated-text::after {
-    content: '';
-    position: absolute;
-    top: -5%;
-    left: -5%;
-    width: 110%;
-    height: 110%;
-    border-radius: 50%;
-    background: rgba(255, 215, 0, 0.2);
-    animation: glow 3s infinite alternate;
-    z-index: -1;
 }
 
 @keyframes glow {
@@ -342,7 +343,7 @@ body {
     position: absolute;
     left: -80px; /* Posicionar parcialmente fuera del contenedor hacia la izquierda */
     top: 50%;
-    transform: translateY(-50%); /* Centrado vertical */
+    transform: translateY(-50%);
     width: 90px; /* Aumentar el tamaño del pointer */
     height: auto;
     z-index: 100;
@@ -477,6 +478,44 @@ body {
     transform: scale(1.05);
 }
 
+.prize-countdown.expiring {
+    color: red;
+    font-weight: bold;
+}
+
+/* Estilos del Contador Regresivo */
+.prizes-list .prize-countdown {
+    background: var(--countdown-bg);
+    color: var(--countdown-color);
+    padding: 5px 10px;
+    border-radius: 12px;
+    border: var(--countdown-border);
+    font-size: 0.9em;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.prizes-list .prize-countdown.expiring {
+    background: rgba(255, 69, 0, 0.9); /* Rojo anaranjado */
+    color: #FFFFFF;
+    animation: shake 0.5s infinite;
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
 /* ========== LISTA DE PREMIOS ========= */
 .prizes-section {
     margin-top: 40px;
@@ -540,40 +579,6 @@ body {
     text-shadow: 2px 2px 5px rgba(255, 20, 147, 0.7);
 }
 
-/* Estilos del Contador Regresivo */
-.prizes-list .prize-countdown {
-    background: var(--countdown-bg);
-    color: var(--countdown-color);
-    padding: 5px 10px;
-    border-radius: 12px;
-    border: var(--countdown-border);
-    font-size: 0.9em;
-    font-weight: bold;
-    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-    transition: background 0.3s ease, color 0.3s ease;
-}
-
-/* Cambiar el estilo cuando el tiempo está por agotarse */
-.prizes-list .prize-countdown.expiring {
-    background: rgba(255, 69, 0, 0.9); /* Rojo anaranjado */
-    color: #FFFFFF;
-    animation: shake 0.5s infinite;
-}
-
-@keyframes shake {
-    0% { transform: translate(1px, 1px) rotate(0deg); }
-    10% { transform: translate(-1px, -2px) rotate(-1deg); }
-    20% { transform: translate(-3px, 0px) rotate(1deg); }
-    30% { transform: translate(3px, 2px) rotate(0deg); }
-    40% { transform: translate(1px, -1px) rotate(1deg); }
-    50% { transform: translate(-1px, 2px) rotate(-1deg); }
-    60% { transform: translate(-3px, 1px) rotate(0deg); }
-    70% { transform: translate(3px, 1px) rotate(-1deg); }
-    80% { transform: translate(-1px, -1px) rotate(1deg); }
-    90% { transform: translate(1px, 2px) rotate(0deg); }
-    100% { transform: translate(1px, -2px) rotate(-1deg); }
-}
-
 .prizes-list .prize-actions button,
 .prizes-list .prize-actions span {
     font-size: 1em;
@@ -618,7 +623,6 @@ body {
     align-items: center;
 }
 
-/* Iconos de reproducción y pausa usando pseudo-elementos */
 .music-toggle-btn.paused::after {
     content: '▶️'; /* Icono de reproducción */
 }
